@@ -1,2 +1,4 @@
-exports.connection = require('./connection');
-exports.queries = require('./queries');
+module.exports = {
+    connection:require('./connection'),
+    queries:require('./queries')
+}
