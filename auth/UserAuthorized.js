@@ -26,7 +26,7 @@ module.exports = async(req, res, next) => {
                     return universalFunction.unauthorizedResponse(res,messages.USER_NOT_FOUND);
                 }
         } else {
-            return universalFunction.unauthorizedResponse(res,messages.INVALID_TOKEN );
+            return universalFunction.unauthorizedResponse(res,messages.INVALID_TOKEN);
         }  
     } catch (error) {
         return universalFunction.unauthorizedResponse(res);
