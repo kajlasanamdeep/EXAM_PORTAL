@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
-var connect = function() {
+const mongoose = require('mongoose');
+const config = require('../config/db-config');
+function connect() {
     return new Promise((connect,error)=>{
-        var DBURL = 'mongodb+srv://root:root@cluster0.hp237xl.mongodb.net/Exam_Portal_Database?retryWrites=true&w=majority';
+        const DBURL = `mongodb+srv://${config.USERNAME}:${config.PASSWORD}@${config.CLUSTER_LINK}.mongodb.net/${config.DB_NAME}?retryWrites=true&w=majority`;
         mongoose.connect(DBURL,(err,connected)=>{
             if(err) return error(err);
             else if(connected) return connect("Database Connected SuccessFully!");

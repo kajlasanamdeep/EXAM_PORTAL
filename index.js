@@ -1,19 +1,30 @@
+/* importing modules */
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
-const { PORT } = require('./config/config');
-const { connection } = require('./db');
+const dotenv = require('dotenv');
 
+/* importing files */
+dotenv.config({path:'./config/.env'});
+const config = require('./config/config');
+const connection = require('./db/connection');
+
+/* setting app middelwares */
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
+/* setting connection to mongodb atlas database */
 connection.connect().then((connected)=>{
-    app.listen(PORT ,(err) => {
+
+    app.listen(config.PORT || 3000,(err) => {
+
         if (err) throw err;
-        else console.log(`Running on port ${PORT}`);
+
+        else console.log(`App Running on port ${config.PORT || 3000}`);
     });
+
     console.log(connected);
+
 }).catch((error)=>{
     console.log("Database Connection Error:",error);
 });

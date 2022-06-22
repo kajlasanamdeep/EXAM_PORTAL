@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./index.js",
-    "dev":"nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "seed-admin": "node ./db/seed-Admin.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,12 @@
   "homepage": "https://github.com/hritiksantoshi/exam-portal#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "mongoose": "^6.4.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.0"
   }
 }
