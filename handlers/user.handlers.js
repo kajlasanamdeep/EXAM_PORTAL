@@ -9,7 +9,7 @@ const { default: mongoose } = require('mongoose');
 const { comparePasswordUsingBcrypt } = require('../lib/universal-function');
 const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
 
-module.exports.registerHandler = async function (req, res) {
+module.exports.registerHandler = async function (req) {
     try {
         req.body.userType = APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER;
 
@@ -49,7 +49,8 @@ module.exports.registerHandler = async function (req, res) {
     }
 }
 
-module.exports.loginHandler = async function(email,password) {
+module.exports.loginHandler = async function(req) {
+    const {email,password} = req.body;
     let user = await users.findOne({
         email:email
     })
@@ -58,9 +59,9 @@ module.exports.loginHandler = async function(email,password) {
         message:messages.USER_NOT_FOUND
     } 
 
-    let password = await comparePasswordUsingBcrypt(password)
+    let checkPassword = await comparePasswordUsingBcrypt(password,user.password)
     try{
-    if(!password){
+    if(!checkPassword){
         return {
             status:statusCodes.BAD_REQUEST,
             message:messages.INVALID_PASSWORD
