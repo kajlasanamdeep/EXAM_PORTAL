@@ -1,24 +1,44 @@
-const mongoose = require('mongoose');
-const adminHandler = require('../handlers/admin.handler');
+const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
+const Handler = require('../handlers');
 const universalFunction = require('../lib/universal-function');
+const messagesList = require('../messages/messages');
+const messages = messagesList.MESSAGES;
+const validator = require('../validations');
 
-module.exports.approveOrDeclineExaminer =  async function(req,res) {
-    try{
-    let payload = req.body;
-    let responseData = await adminHandler.approveOrDeclineExaminer(payload);
+module.exports.approveOrDeclineExaminer = async function (req, res) {
+    try {
+
+        let loggedUser = req.loggedUser;
+        if(loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.ADMIN)  return universalFunction.forBiddenResponse(res,messages.FORBIDDEN);
+
+        const {error,value} =  validator.admin.validateAction(req);
+        if(error) return universalFunction.validationError(res,error);
+
+        const data = await Handler.admin.approveOrDeclineExaminer(value);
+        return universalFunction.sendResponse(res,data.status,data.message,data.data);
+
     }
-    catch(err){
-        throw err;
+    catch (error) {
+
+        return universalFunction.errorResponse(res,error);
+
     }
 
 }
 
-module.exports.pendingExaminers = async function(req,res) {
-    try{
-    let examiners = await adminHandler.pendingExaminers();
-    return universalFunction.sendResponse(res,examiners.status,examiners.msg,examiners);
+module.exports.getPendingExaminers = async function (req, res) {
+    try {
+
+        let loggedUser = req.loggedUser;
+        if(loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.ADMIN)  return universalFunction.forBiddenResponse(res,messages.FORBIDDEN);
+        
+        let data = await Handler.admin.pendingExaminers(req);
+        return universalFunction.sendResponse(res, data.status, data.message, data.data);
+
     }
-    catch(err){
-    throw err;
+    catch (error) {
+
+        return universalFunction.errorResponse(res,error);
+
     }
 }

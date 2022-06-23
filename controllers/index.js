@@ -1,3 +1,4 @@
 module.exports = {
-    user:require('./user.controllers')
+    user:require('./user.controllers'),
+    admin:require('./admin.controllers')
 }
