@@ -11,5 +11,5 @@ module.exports.getExaminerDetails = async function(payload){
 }
 
 module.exports.approveOrDeclineExaminer = async function(payload){
-   let 
+    
 }
