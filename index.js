@@ -7,13 +7,13 @@ const dotenv = require('dotenv');
 dotenv.config({path:'./config/.env'});
 const config = require('./config/config');
 const connection = require('./db/connection');
-const userRoutes = require('./routes/user.routes');
+const Routes = require('./routes');
 
 /* setting app middelwares */
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/',userRoutes);
+app.use('/user',Routes.userRoutes);
 
 /* setting connection to mongodb atlas database */
 connection.connect().then((connected)=>{
