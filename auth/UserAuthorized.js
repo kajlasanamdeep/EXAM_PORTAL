@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const users = require('../models/users');
 const universalFunction = require('../lib/universal-function');
 const messageList = require("../messages/messages");
+const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
 const messages = messageList.MESSAGES;
 
 module.exports = async(req, res, next) => {
@@ -17,7 +18,7 @@ module.exports = async(req, res, next) => {
                 if (!decodedData) return universalFunction.forBiddenResponse(res,messages.INVALID_TOKEN);
                 let userData = await users.findOne({
                     _id:mongoose.Types.ObjectId(decodedData._id),
-                    status:'APPROVED'
+                    status:APP_CONSTANTS.ACCOUNT_STATUS.APPROVED
                 });
                 if(userData){
                     req.loggedUser = userData;

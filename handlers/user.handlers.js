@@ -1,23 +1,23 @@
 const universalFunction = require('../lib/universal-function');
-const users = require('../models/users');
+const Model = require('../models');
 const messageList = require("../messages/messages");
-const statusCodeList = require("../statusCodes/status_codes");
-const statusCodes = statusCodeList.STATUS_CODE;
 const messages = messageList.MESSAGES;
+const statusCodeList = require("../statusCodes/statusCodes");
+const statusCodes = statusCodeList.STATUS_CODE;
 const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
 const { default: mongoose } = require('mongoose');
 
-module.exports.registerHandler = async function (payload) {
+module.exports.register = async function (payload) {
     try {
 
-        let existingUser = await users.findOne({ email: payload.email });
+        let existingUser = await Model.users.findOne({ email: payload.email });
 
         if (existingUser) return {
             status: statusCodes.UNPROCESSABLE_ENTITY,
             message: messages.EMAIL_ALREDAY_TAKEN
         };
 
-        existingUser = await users.findOne({ mobileNumber: payload.mobileNumber });
+        existingUser = await Model.users.findOne({ mobileNumber: payload.mobileNumber });
 
         if (existingUser) return {
             status: statusCodes.UNPROCESSABLE_ENTITY,
@@ -26,7 +26,7 @@ module.exports.registerHandler = async function (payload) {
 
         payload.password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
         payload.status = APP_CONSTANTS.ACCOUNT_STATUS.PENDING;
-        let user = await users.create(payload);
+        let user = await Model.users.create(payload);
         let accessToken = await universalFunction.jwtSign(user);
 
         return {
@@ -47,10 +47,10 @@ module.exports.registerHandler = async function (payload) {
 
 
 
-module.exports.loginHandler = async function (payload) {
+module.exports.login = async function (payload) {
     try {
 
-        let user = await users.findOne({
+        let user = await Model.users.findOne({
             email: payload.email
         });
 
@@ -80,6 +80,8 @@ module.exports.loginHandler = async function (payload) {
         }
     }
     catch (error) {
+
         throw error;
+
     }
 }
