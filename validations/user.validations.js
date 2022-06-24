@@ -3,19 +3,19 @@ const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
 
 const validateLogin = (req) => {
     let UserLoginSchema = joi.object({
-        email: joi.string().email().required().error(()=>Error('email is Not valid!')),
-        password: joi.string().required().error(()=>Error('password is Not valid!'))
+        email: joi.string().email().required().messages().error(()=>Error('Email is Not Valid!')),
+        password: joi.string().required().error(()=>Error('Password Is Not Valid!'))
     });
     return UserLoginSchema.validate(req.body);
 };
 const validateRegister = (req) => {
     let UserRegistrationSchema = joi.object({
-        firstName: joi.string().optional().error(()=>Error('firstName is Not valid!')),
-        lastName: joi.string().optional().error(()=>Error('lastName is Not valid!')),
-        mobileNumber: joi.string().min(10).max(12).required().error(()=>Error('mobileNumber is Not valid!')),
-        email: joi.string().email({minDomainSegments:2,tlds:{allow:['com','net']}}).required().lowercase().error(()=>Error('email is Not valid!')),
-        userType: joi.string().valid(APP_CONSTANTS.ACCOUNT_TYPE.STUDENT,APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER).required().error(()=>Error('userType is Not valid!')),
-        password: joi.string().min(6).required().error(()=>Error('password is Not valid!'))
+        firstName: joi.string().optional().error(()=>Error('First Name Is Not Valid!')),
+        lastName: joi.string().optional().error(()=>Error('Last Name Is Not Valid!')),
+        mobileNumber: joi.string().min(10).max(12).required().error(()=>Error('Mobile Number Is Not Valid!')),
+        email: joi.string().email({minDomainSegments:2,tlds:{allow:['com','net']}}).required().lowercase().error(()=>Error('Email Address Is Not Valid!')),
+        userType: joi.string().valid(APP_CONSTANTS.ACCOUNT_TYPE.STUDENT,APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER).required().error(()=>Error('User Type Is Not Valid!')),
+        password: joi.string().min(6).required().error(()=>Error('Password Is Not Valid!'))
     });
     return UserRegistrationSchema.validate(req.body);
 };

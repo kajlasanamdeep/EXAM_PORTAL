@@ -38,25 +38,34 @@ module.exports.approveOrDeclineExaminer = async function (payload) {
 
 };
 
-module.exports.pendingExaminers = async function (req) {
+module.exports.getExaminers = async function (req) {
   try {
 
     let query = {
       $and: [
-        { userType: APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER },
-        { status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING },
-      ],
+        { userType: APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER }
+      ]
     };
 
-    let pendingExaminers = await Model.users.find(query);
+    if(req.params.getExaminers == "pendingExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING });
+    else if(req.params.getExaminers == "approvedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED });
+    else if(req.params.getExaminers == "declinedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DECLINED });
+    else if(req.params.getExaminers == "deletedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DELETED });
+    else if(req.params.getExaminers == "Examiners");
+    else return{
+      status:statusCodes.NOT_FOUND,
+      message:messages.INVALID_URL
+    };
+
+    let Examiners = await Model.users.find(query);
     let count = await Model.users.countDocuments(query);
 
     return {
       status: statusCodes.SUCCESS,
-      msg: messages.SUCCESS,
+      message: messages.SUCCESS,
       data: {
         count: count,
-        pendingExaminers: pendingExaminers,
+        Examiners: Examiners
       },
     };
 

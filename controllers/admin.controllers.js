@@ -26,13 +26,13 @@ module.exports.approveOrDeclineExaminer = async function (req, res) {
 
 }
 
-module.exports.getPendingExaminers = async function (req, res) {
+module.exports.getExaminers = async function (req, res) {
     try {
 
         let loggedUser = req.loggedUser;
         if(loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.ADMIN)  return universalFunction.forBiddenResponse(res,messages.FORBIDDEN);
         
-        let data = await Handler.admin.pendingExaminers(req);
+        let data = await Handler.admin.getExaminers(req);
         return universalFunction.sendResponse(res, data.status, data.message, data.data);
 
     }
