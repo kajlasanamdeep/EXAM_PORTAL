@@ -69,6 +69,11 @@ module.exports.login = async function (payload) {
             }
         };
 
+        if(user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return{
+            status:statusCodes.FORBIDDEN,
+            message:messages.USER_NOT_ALLOWDED_TO_LOGIN
+        }
+
         let accessToken = await universalFunction.jwtSign(user);
 
         return {

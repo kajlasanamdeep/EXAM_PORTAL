@@ -18,18 +18,10 @@ module.exports.getExaminerDetails = async function (payload) {
 module.exports.approveOrDeclineExaminer = async function (payload) {
   let query = {_id:mongoose.Types.ObjectId(payload.examinerId)};
 
-  let newPassword = generatorPassword.generate({
-    length:14,
-    numbers:true,
-    uppercase:true
-   });
-   let options = { new: true };
-
-   let hashedPassword = universalFunction.hashPasswordUsingBcrypt(newPassword);
-
-   let toUpdate = {
-    status:payload.status,
-    password: hashedPassword
+  let options = { new: true };
+ 
+  let valuesToUpdate = {
+    status:payload.status
    }
    
    let updateExaminer = await users.findOneAndUpdate(query,toUpdate,options)

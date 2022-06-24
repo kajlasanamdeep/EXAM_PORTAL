@@ -14,6 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/user',Routes.userRoutes);
+app.use('/admin',Routes.adminRoutes);
 
 /* setting connection to mongodb atlas database */
 connection.connect().then((connected)=>{
