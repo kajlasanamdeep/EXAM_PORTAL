@@ -1,8 +1,10 @@
-const {adminController} = require('../controllers');
+const UserAuthorized = require('../auth/UserAuthorized');
+const controller = require('../controllers');
 
 const router = require('express').Router();
 
-router.get('/pendingExaminers',adminController.pendingExaminers);
+router.post('/Action',UserAuthorized,controller.admin.approveOrDeclineExaminer);
 
+router.get('/pendingExaminers',UserAuthorized,controller.admin.getPendingExaminers);
 
 module.exports = router;

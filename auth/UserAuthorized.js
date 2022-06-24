@@ -30,6 +30,6 @@ module.exports = async(req, res, next) => {
             return universalFunction.unauthorizedResponse(res,messages.INVALID_TOKEN);
         }  
     } catch (error) {
-        return universalFunction.unauthorizedResponse(res);
+        return universalFunction.unauthorizedResponse(res,messages.UNAUTHORIZED);
     }
 };

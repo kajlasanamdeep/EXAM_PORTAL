@@ -1,3 +1,4 @@
 module.exports = {
-    user:require('./user.validations')
+    user:require('./user.validations'),
+    admin:require('./admin.validations')
 }

@@ -13,8 +13,10 @@ const Routes = require('./routes');
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/user',Routes.userRoutes);
-app.use('/admin',Routes.adminRoutes);
+
+app.use('/user',Routes.user);
+app.use('/admin',Routes.admin);
+
 
 /* setting connection to mongodb atlas database */
 connection.connect().then((connected)=>{
