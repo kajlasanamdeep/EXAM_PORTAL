@@ -6,35 +6,57 @@ const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
 const messages = messageList.MESSAGES;
 
+module.exports.getDashboard = async function (payload) {
+  try {
+
+    let adminDetails = payload.loggedUser;
+
+    let totalExaminers = await Model.users.countDocuments({
+      userType:APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER
+    });
+
+    return {
+      status: statusCodes.SUCCESS,
+      message: messages.DASHBOARD_LOADED_SUCCESSFULLY,
+      data: {
+        adminDetails: adminDetails,
+        totalExaminers:totalExaminers
+      }
+    };
+
+  } catch (error) {
+
+    throw error;
+
+  }
+}
 
 module.exports.approveOrDeclineExaminer = async function (payload) {
-    try {
+  try {
 
-        let _id = mongoose.Types.ObjectId(payload.examinerID);
-   
-        let fieldsToUpdate = {
-                                 status:payload.action
-                             };
-     
-         let options = {
-                         new:true
-                     };
-     
-        let upatedExaminer = await Model.users.findByIdAndUpdate(_id,fieldsToUpdate,options);
-     
-        return{
-            status:statusCodes.SUCCESS,
-            message:messages.SUCCESS,
-            data:{
-                upatedExaminer:upatedExaminer
-            }
-        }
-     
-    } catch (error) {
+    let _id = mongoose.Types.ObjectId(payload.examinerID);
 
-        throw error;
+    let fieldsToUpdate = {
+      status: payload.action
+    };
 
+    let options = {
+      new: true
+    };
+
+    let upatedExaminer = await Model.users.findByIdAndUpdate(_id, fieldsToUpdate, options);
+    let message = upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED ? messages.USER_APPROVED_SUCCESSFULLY : messages.USER_DECLINED_SUCCESSFULLY;
+
+    return {
+      status: statusCodes.SUCCESS,
+      message: message
     }
+
+  } catch (error) {
+
+    throw error;
+
+  }
 
 };
 
@@ -47,12 +69,11 @@ module.exports.getExaminers = async function (req) {
       ]
     };
 
-    if(req.params.getExaminers == "pendingExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING });
-    else if(req.params.getExaminers == "approvedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED });
-    else if(req.params.getExaminers == "declinedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DECLINED });
-    else if(req.params.getExaminers == "deletedExaminers") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DELETED });
-    else if(req.params.getExaminers == "Examiners");
-    else return{
+    if (req.params.status == "pending") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING });
+    else if (req.params.status == "approved") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED });
+    else if (req.params.status == "declined") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DECLINED });
+    else if (req.params.status == "deleted") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DELETED });
+    else if (req.params.status != "all") return{
       status:statusCodes.NOT_FOUND,
       message:messages.INVALID_URL
     };
@@ -69,9 +90,9 @@ module.exports.getExaminers = async function (req) {
       },
     };
 
-  } catch (err) {
+  } catch (error) {
 
-    throw err;
+    throw error;
 
   }
 };
