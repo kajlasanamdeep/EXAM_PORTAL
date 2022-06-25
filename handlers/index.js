@@ -1,4 +1,5 @@
 module.exports = {
     user:require('./user.handlers'),
-    admin:require('./admin.handler')
+    admin:require('./admin.handlers'),
+    examiner:require('./examiner.handlers')
 }

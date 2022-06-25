@@ -1,10 +1,9 @@
-const UserAuthorized = require('../auth/UserAuthorized');
-const controller = require('../controllers');
-
 const router = require('express').Router();
+const controller = require('../controllers').admin;
+const userAuthorization = require('../auth/user.authorization');
 
-router.get('/dashboard',UserAuthorized,controller.admin.getDashboard);
-router.post('/examiner/action',UserAuthorized,controller.admin.approveOrDeclineExaminer);
-router.get('/examiners/:status',UserAuthorized,controller.admin.getExaminers);
+router.get('/dashboard',userAuthorization,controller.getDashboard);
+router.get('/examiners/:status',userAuthorization,controller.getExaminers);
+router.post('/examiner/action',userAuthorization,controller.approveOrDeclineExaminer);
 
 module.exports = router;
