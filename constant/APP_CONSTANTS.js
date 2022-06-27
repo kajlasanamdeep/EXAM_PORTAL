@@ -9,5 +9,10 @@ module.exports = {
         EXAMINER:'EXAMINER',
         STUDENT:'STUDENT',
         ADMIN:'ADMIN'
-    }
+    },
+    COURSE_STATUS: {
+		ACTIVE: 'ACTIVE',
+		DELETED: 'DELETED',
+		BLOCKED: 'BLOCKED',
+	}
 }

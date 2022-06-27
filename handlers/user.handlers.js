@@ -33,7 +33,8 @@ module.exports.register = async function (payload) {
             status: statusCodes.CREATED,
             message: messages.USER_REGISTER_SUCCESSFULLY,
             data: {
-                accessToken: accessToken
+                accessToken: accessToken,
+                userType: user.userType
             }
         };
 
@@ -83,7 +84,8 @@ module.exports.login = async function (payload) {
             status: statusCodes.SUCCESS,
             message: messages.USER_LOGIN_SUCCESSFULLY,
             data: {
-                accessToken: accessToken
+                accessToken: accessToken,
+                userType: user.userType
             }
         }
     }

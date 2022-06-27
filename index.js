@@ -18,11 +18,9 @@ const corsOptions = {
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(cors(corsOptions));
 app.use('/', Routes.routes);
 app.use('/admin', Routes.admin);
-
 
 /* setting connection to mongodb atlas database */
 connection.connect().then((connected) => {
