@@ -45,7 +45,9 @@ module.exports.approveOrDeclineExaminer = async function (payload) {
     };
 
     let upatedExaminer = await Model.users.findByIdAndUpdate(_id, fieldsToUpdate, options);
-    let message = upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED ? messages.USER_APPROVED_SUCCESSFULLY : messages.USER_DECLINED_SUCCESSFULLY;
+    let message = upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED ? 
+                                            messages.USER_APPROVED_SUCCESSFULLY : upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.DECLINED ?
+                                            messages.USER_DECLINED_SUCCESSFULLY : messages.USER_DELETED_SUCCESSFULLY;
 
     return {
       status: statusCodes.SUCCESS,

@@ -18,14 +18,6 @@ const CourseModel = new Schema({
     type: String,
     required:true
   },
-  createdDate: {
-    type: Date,
-    default: new Date(),
-  },
-  modifiedDate: {
-    type: Date,
-    default: new Date(),
-  },
   description: {
     type: String,
     required: true,
@@ -36,6 +28,14 @@ const CourseModel = new Schema({
     default: courseStatus[0],
     enum: courseStatus,
   },
+  createdDate: {
+    type: Date,
+    default: new Date(),
+  },
+  modifiedDate: {
+    type: Date,
+    default: new Date(),
+  }
 });
 
 module.exports = mongoose.model("courses", CourseModel);
