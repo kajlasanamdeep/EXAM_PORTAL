@@ -12,7 +12,6 @@ module.exports.registerCourse = async function (req,res) {
         if (loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER) return universalFunction.forBiddenResponse(res, messages.USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE);
 
         
-
     } catch (error) {
 
         return  universalFunction.errorResponse(res,error);
