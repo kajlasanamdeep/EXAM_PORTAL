@@ -9,7 +9,7 @@ const Actions = [
 module.exports.validateAction = function (req) {
 
     let actionSchema = joi.object({
-        examinerID: joi.string().length(24).required().error(() => Error('ExaminerID Is Not Valid')),
+        examinerID: joi.string().hex().length(24).required().error(() => Error('ExaminerID Is Not Valid')),
         action: joi.string().valid(...Actions).required().error(() => Error('Action Is Not Valid!'))
     });
 
