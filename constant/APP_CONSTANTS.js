@@ -1,6 +1,6 @@
 module.exports = {
     ACCOUNT_STATUS:{
-        PENDING:'PENDING',
+        PENDING:'PENDING',                     
         APPROVED:'APPROVED',
         DELETED:'DELETED',
         DECLINED:'DECLINED'

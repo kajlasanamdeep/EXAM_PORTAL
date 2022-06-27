@@ -18,7 +18,7 @@ module.exports.approveOrDeclineExaminer = async function (req, res) {
         return universalFunction.sendResponse(res,data.status,data.message,data.data);
 
     }
-    catch (error) {
+    catch (error) {g
 
         return universalFunction.errorResponse(res,error);
 
