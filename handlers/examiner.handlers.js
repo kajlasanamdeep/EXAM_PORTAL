@@ -8,7 +8,8 @@ const messages = messageList.MESSAGES;
 
 module.exports.registerCourse = async function (payload) {
     try {
-        
+         let newCourse = {};
+         
         
 
     } catch (error) {
