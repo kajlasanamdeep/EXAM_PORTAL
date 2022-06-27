@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors(corsOptions));
-app.use('/user', Routes.user);
+app.use('/', Routes.routes);
 app.use('/admin', Routes.admin);
 
 
@@ -37,5 +37,7 @@ connection.connect().then((connected) => {
     console.log(connected);
 
 }).catch((error) => {
+
     console.log("Database Connection Error:", error);
+    
 });

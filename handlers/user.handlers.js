@@ -33,8 +33,7 @@ module.exports.register = async function (payload) {
             status: statusCodes.CREATED,
             message: messages.USER_REGISTER_SUCCESSFULLY,
             data: {
-                accessToken: accessToken,
-                user: user
+                accessToken: accessToken
             }
         };
 
@@ -59,9 +58,9 @@ module.exports.login = async function (payload) {
             message: messages.USER_NOT_FOUND
         };
 
-        let checkPassword = await universalFunction.comparePasswordUsingBcrypt(payload.password, user.password);
+        let passwordIsCorrect = await universalFunction.comparePasswordUsingBcrypt(payload.password, user.password);
 
-        if (!checkPassword) {
+        if (!passwordIsCorrect) {
             return {
                 status: statusCodes.BAD_REQUEST,
                 message: messages.INVALID_PASSWORD
@@ -72,6 +71,11 @@ module.exports.login = async function (payload) {
             status:statusCodes.FORBIDDEN,
             message:messages.USER_NOT_ALLOWDED_TO_LOGIN
         }
+        if (user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.USER_NOT_ALLOWDED_TO_LOGIN
+        };
+
 
         let accessToken = await universalFunction.jwtSign(user);
 
@@ -79,8 +83,7 @@ module.exports.login = async function (payload) {
             status: statusCodes.SUCCESS,
             message: messages.USER_LOGIN_SUCCESSFULLY,
             data: {
-                accessToken: accessToken,
-                user: user
+                accessToken: accessToken
             }
         }
     }
