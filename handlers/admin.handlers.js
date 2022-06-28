@@ -11,16 +11,11 @@ module.exports.getDashboard = async function (payload) {
 
     let adminDetails = payload.loggedUser;
 
-    let totalExaminers = await Model.users.countDocuments({
-      userType:APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER
-    });
-
     return {
       status: statusCodes.SUCCESS,
       message: messages.DASHBOARD_LOADED_SUCCESSFULLY,
       data: {
-        adminDetails: adminDetails,
-        totalExaminers:totalExaminers
+        adminDetails: adminDetails
       }
     };
 

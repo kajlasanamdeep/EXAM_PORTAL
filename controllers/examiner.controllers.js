@@ -5,17 +5,18 @@ const messagesList = require('../messages/messages');
 const messages = messagesList.MESSAGES;
 const validator = require('../validations');
 
-module.exports.registerCourse = async function (req,res) {
+module.exports.createCourse = async function (req,res) {
     try {
 
         let loggedUser = req.loggedUser;
         if (loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER) return universalFunction.forBiddenResponse(res, messages.USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE);
         
-        req.body.examinerID = req.loggedUser._id;
+        req.body.examinerID = req.loggedUser.id;
+        
         const { error, value } = validator.examiner.validateCourse(req);
         if (error) return universalFunction.validationError(res, error);
 
-        const response = await Handler.examiner.registerCourse(value);
+        const response = await Handler.examiner.createCourse(value);
 
         return universalFunction.sendResponse(res,response.status,response.message,response.data);
 
@@ -24,4 +25,21 @@ module.exports.registerCourse = async function (req,res) {
         return  universalFunction.errorResponse(res,error);
 
     }
-}
+};
+
+module.exports.getDashboard = async function (req,res) {
+    try {
+
+        let loggedUser = req.loggedUser;
+        if (loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER) return universalFunction.forBiddenResponse(res, messages.USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE);
+
+        const response = await Handler.examiner.getDashboard(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+};
