@@ -25,8 +25,8 @@ const CourseModel = new Schema({
   },
   status: {
     type: String,
-    default: courseStatus[0],
     enum: courseStatus,
+    default: APP_CONSTANTS.COURSE_STATUS.ACTIVE
   },
   createdDate: {
     type: Date,
