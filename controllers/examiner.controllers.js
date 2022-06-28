@@ -27,6 +27,29 @@ module.exports.createCourse = async function (req,res) {
     }
 };
 
+module.exports.addStudent = async function(req,res) {
+    try {
+        
+        let loggedUser = req.loggedUser;
+        if (loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER) return universalFunction.forBiddenResponse(res, messages.USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE);
+        
+        req.body.userType = APP_CONSTANTS.ACCOUNT_TYPE.STUDENT;
+        req.body.status = APP_CONSTANTS.ACCOUNT_STATUS.APPROVED;
+        
+        const { error, value } = validator.examiner.validateAddStudent(req);
+        if (error) return universalFunction.validationError(res, error);
+
+        const response = await Handler.examiner.addStudent(value);
+
+        return universalFunction.sendResponse(res,response.status,response.message,response.data);
+        
+    } catch (error) {
+        
+        return  universalFunction.errorResponse(res,error);
+
+    }
+};
+
 module.exports.getDashboard = async function (req,res) {
     try {
 

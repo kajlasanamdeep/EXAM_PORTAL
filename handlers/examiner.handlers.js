@@ -62,3 +62,21 @@ module.exports.getDashboard = async function (payload) {
 
     }
 }
+
+module.exports.addStudent = async function (payload) {
+    try {
+
+        let user = await Model.users.findOne({ email: payload.email,userType:payload.userType,status:payload.status });
+
+        if(!user){
+            user = await Model.users.create(payload);
+        }
+
+
+
+    } catch (error) {
+
+        throw error;
+
+    }
+}

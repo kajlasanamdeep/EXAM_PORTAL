@@ -14,5 +14,10 @@ module.exports = {
 		ACTIVE: 'ACTIVE',
 		DELETED: 'DELETED',
 		BLOCKED: 'BLOCKED',
-	}
+	},
+    STUDENT_GENDER:{
+        MALE:'MALE',
+        FEMALE:'FEMALE',
+        OTHER:'OTHER'
+    }
 }
