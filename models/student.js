@@ -10,7 +10,8 @@ const Schema = mongoose.Schema;
 const StudentModel = new Schema({
     userID:{
         type: Schema.Types.ObjectId,
-		required: true
+		required: true,
+        ref:'users'
     },
     fatherName: { 
         type: String, 

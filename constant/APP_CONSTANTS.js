@@ -19,5 +19,11 @@ module.exports = {
         MALE:'MALE',
         FEMALE:'FEMALE',
         OTHER:'OTHER'
+    },
+    SUBJECT_STATUS:{
+        ACTIVE: 'ACTIVE',
+		DELETED: 'DELETED',
+		BLOCKED: 'BLOCKED'
+
     }
 }

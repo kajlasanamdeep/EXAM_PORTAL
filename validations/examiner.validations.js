@@ -18,6 +18,15 @@ module.exports.validateCourse = function (req) {
     return courseSchema.validate(req.body);
 };
 
+module.exports.validateGetStudent = function (req) {
+
+    let Schema = joi.object({
+        courseID: joi.string().hex().length(24).required().error(() => Error('CourseID Is Not Valid'))
+    });
+
+    return Schema.validate(req.params);
+};
+
 module.exports.validateAddStudent = function (req) {
 
     let studentSchema = joi.object({

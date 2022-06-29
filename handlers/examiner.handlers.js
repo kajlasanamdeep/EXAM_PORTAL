@@ -80,3 +80,67 @@ module.exports.addStudent = async function (payload) {
 
     }
 }
+
+module.exports.getStudent = async function (payload) {
+    try {
+
+        let students = await Model.student.aggregate([
+            {
+                $match:{
+                    courseID : mongoose.Types.ObjectId(payload.courseID)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'courses',
+                    localField: 'courseID',
+                    foreignField: '_id',
+                    as: 'course'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userID',
+                    foreignField: '_id',
+                    as: 'details'
+                }
+            },
+            {
+                $unwind:"$details"
+            },
+            {
+                $unwind:"$course"
+            },
+            {
+                $project: {
+                    fatherName:"$fatherName",
+                    motherName:"$motherName",
+                    DOB:"$dob",
+                    address:"$address",
+                    gender:"$gender",
+                    course:"$course.name",
+                    name:"$details.firstName",
+                    email:"$details.email",
+                    mobilenumber:"$details.mobileNumber"
+
+
+
+
+                }
+            }
+        ]);
+        return {
+            status:statusCodes.SUCCESS,
+            message: messages.STUDENTS,
+            data:{
+                students:students
+            }
+        };
+    }
+    catch (error) {
+
+        throw error;
+
+    }
+}

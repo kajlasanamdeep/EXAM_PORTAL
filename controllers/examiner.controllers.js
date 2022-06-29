@@ -66,3 +66,22 @@ module.exports.getDashboard = async function (req,res) {
 
     }
 };
+
+module.exports.getStudent = async function (req,res) {
+    try{  
+
+        let loggedUser = req.loggedUser;
+        if (loggedUser.userType != APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER) return universalFunction.forBiddenResponse(res, messages.USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE);
+        
+        const { error, value } = validator.examiner.validateGetStudent(req);
+        if (error) return universalFunction.validationError(res, error);
+
+        const response = await Handler.examiner.getStudent(value);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+}
