@@ -10,19 +10,22 @@ const { default: mongoose } = require('mongoose');
 module.exports.register = async function (payload) {
     try {
 
-        let existingUser = await Model.users.findOne({ email: payload.email });
+        let existingUser = await Model.users.findOne({
+            $or: [
+                { email: payload.email },
+                { mobileNumber: payload.mobileNumber }
+            ]
+        });
 
-        if (existingUser) return {
-            status: statusCodes.UNPROCESSABLE_ENTITY,
-            message: messages.EMAIL_ALREDAY_TAKEN
-        };
+        if (existingUser) {
 
-        existingUser = await Model.users.findOne({ mobileNumber: payload.mobileNumber });
+            let message = existingUser.email == payload.email ? messages.EMAIL_ALREDAY_TAKEN : messages.MOBILE_NUMBER_ALREADY_TAKEN;
 
-        if (existingUser) return {
-            status: statusCodes.UNPROCESSABLE_ENTITY,
-            message: messages.MOBILE_NUMBER_ALREADY_TAKEN
-        };
+            return {
+                status: statusCodes.UNPROCESSABLE_ENTITY,
+                message: message
+            };
+        }
 
         payload.password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
         payload.status = APP_CONSTANTS.ACCOUNT_STATUS.PENDING;
@@ -68,9 +71,9 @@ module.exports.login = async function (payload) {
             }
         };
 
-        if(user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return{
-            status:statusCodes.FORBIDDEN,
-            message:messages.USER_NOT_ALLOWDED_TO_LOGIN
+        if (user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.USER_NOT_ALLOWDED_TO_LOGIN
         }
         if (user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return {
             status: statusCodes.FORBIDDEN,

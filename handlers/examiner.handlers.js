@@ -4,29 +4,30 @@ const Model = require("../models");
 const statusCodeList = require("../statusCodes/statusCodes");
 const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
+const universalFunction = require("../lib/universal-function");
 const messages = messageList.MESSAGES;
 
 module.exports.createCourse = async function (payload) {
     try {
-         
+
         let existingCourse = await Model.courses.findOne({
-            examinerID:payload.examinerID,
-            status:APP_CONSTANTS.COURSE_STATUS.ACTIVE,
-            name:payload.name
+            examinerID: payload.examinerID,
+            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE,
+            name: payload.name
         });
 
         if (existingCourse) return {
-            status:statusCodes.UNPROCESSABLE_ENTITY,
+            status: statusCodes.UNPROCESSABLE_ENTITY,
             message: messages.COURSE_ALREADY_EXIST
         }
 
         let course = await Model.courses.create(payload);
 
         return {
-            status:statusCodes.CREATED,
+            status: statusCodes.CREATED,
             message: messages.COURSE_REGISTERED_SUCCESSFULLY,
-            data:{
-                course:course
+            data: {
+                course: course
             }
         }
 
@@ -39,20 +40,20 @@ module.exports.createCourse = async function (payload) {
 
 module.exports.getDashboard = async function (payload) {
     try {
-        
+
         let examiner = payload.loggedUser;
 
         let courses = await Model.courses.find({
-            examinerID:examiner._id,
-            status:APP_CONSTANTS.COURSE_STATUS.ACTIVE
+            examinerID: examiner._id,
+            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE
         });
 
         return {
-            status:statusCodes.SUCCESS,
+            status: statusCodes.SUCCESS,
             message: messages.DASHBOARD_LOADED_SUCCESSFULLY,
-            data:{
-                examinerDetails:examiner,
-                examinerCourses:courses
+            data: {
+                examinerDetails: examiner,
+                examinerCourses: courses
             }
         };
 
@@ -66,13 +67,48 @@ module.exports.getDashboard = async function (payload) {
 module.exports.addStudent = async function (payload) {
     try {
 
-        let user = await Model.users.findOne({ email: payload.email,userType:payload.userType,status:payload.status });
+        let user = await Model.users.findOne({$or:[{ email: payload.email },{mobileNumber:payload.mobileNumber}]});
 
-        if(!user){
+        if (!user) {
             user = await Model.users.create(payload);
         }
 
+        else if (user.userType != "STUDENT") {
 
+            let message = user.email == payload.email ? messages.EMAIL_ALREDAY_TAKEN : messages.MOBILE_NUMBER_ALREADY_TAKEN;
+
+            return {
+                status: statusCodes.UNPROCESSABLE_ENTITY,
+                message: message
+            };
+        }
+
+        else {
+
+            let existingStudent = await Model.students.findOne({
+                courseID: payload.courseID,
+                userID: user._id
+            });
+    
+            if (existingStudent) return {
+                status: statusCodes.UNPROCESSABLE_ENTITY,
+                message: messages.STUDENT_WITH_THIS_DETAILS_ALREADY_REGISTERED
+            }
+    
+            let password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
+            user = await Model.users.findByIdAndUpdate(user._id, { $set: { password: password } }, { new: true });
+        }
+
+        payload.userID = user._id;
+        let student = await Model.students.create(payload);
+
+        return {
+            status: statusCodes.CREATED,
+            message: messages.STUDENT_REGISTERED_SUCCESSFULLY,
+            data: {
+                student: student
+            }
+        }
 
     } catch (error) {
 

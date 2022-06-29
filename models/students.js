@@ -4,7 +4,8 @@ const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
 const gender = [
     APP_CONSTANTS.STUDENT_GENDER.FEMALE,
     APP_CONSTANTS.STUDENT_GENDER.MALE,
-    APP_CONSTANTS.STUDENT_GENDER.OTHER]
+    APP_CONSTANTS.STUDENT_GENDER.OTHER
+]
 
 const Schema = mongoose.Schema;
 const StudentModel = new Schema({
