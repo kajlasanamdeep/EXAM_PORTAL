@@ -76,6 +76,7 @@ module.exports.getStudent = async function (req,res) {
         const { error, value } = validator.examiner.validateGetStudent(req);
         if (error) return universalFunction.validationError(res, error);
 
+        value.examinerID = req.loggedUser.id;
         const response = await Handler.examiner.getStudent(value);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
     }

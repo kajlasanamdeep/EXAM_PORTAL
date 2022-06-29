@@ -119,6 +119,12 @@ module.exports.addStudent = async function (payload) {
 
 module.exports.getStudent = async function (payload) {
     try {
+        let course = await Model.courses.findById(payload.courseID);
+
+        if(course.examinerID != payload.examinerID) return{
+            status:statusCodes.NOT_FOUND,
+            message:messages.COURSE_NOT_FOUND
+        };
 
         let students = await Model.students.aggregate([
             {
