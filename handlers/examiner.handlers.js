@@ -67,16 +67,19 @@ module.exports.getDashboard = async function (payload) {
 module.exports.addStudent = async function (payload) {
     try {
 
-        let user = await Model.users.findOne({ email: payload.email });
+        let user = await Model.users.findOne({$or:[{ email: payload.email },{mobileNumber:payload.mobileNumber}]});
 
         if (!user) {
             user = await Model.users.create(payload);
         }
 
         else if (user.userType != "STUDENT") {
+
+            let message = user.email == payload.email ? messages.EMAIL_ALREDAY_TAKEN : messages.MOBILE_NUMBER_ALREADY_TAKEN;
+
             return {
                 status: statusCodes.UNPROCESSABLE_ENTITY,
-                message: messages.EMAIL_ALREDAY_TAKEN
+                message: message
             };
         }
 
