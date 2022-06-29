@@ -159,10 +159,6 @@ module.exports.getStudent = async function (payload) {
                     name:"$details.firstName",
                     email:"$details.email",
                     mobilenumber:"$details.mobileNumber"
-
-
-
-
                 }
             }
         ]);
