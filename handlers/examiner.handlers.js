@@ -120,7 +120,7 @@ module.exports.addStudent = async function (payload) {
 module.exports.getStudent = async function (payload) {
     try {
 
-        let students = await Model.student.aggregate([
+        let students = await Model.students.aggregate([
             {
                 $match:{
                     courseID : mongoose.Types.ObjectId(payload.courseID)
@@ -162,11 +162,15 @@ module.exports.getStudent = async function (payload) {
                 }
             }
         ]);
+
+        let count = await Model.students.countDocuments({courseID:payload.courseID});
+
         return {
             status:statusCodes.SUCCESS,
             message: messages.STUDENTS,
             data:{
-                students:students
+                students:students,
+                count:count
             }
         };
     }
