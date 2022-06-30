@@ -6,8 +6,10 @@ const Actions = [
 ];
 
 module.exports.actionSchema = {
+
     body : joi.object({
         examinerID: joi.string().hex().length(24).required().error(() => Error('ExaminerID Is Not Valid')),
         action: joi.string().valid(...Actions).required().error(() => Error('Action Is Not Valid!'))
     })
+    
 }
