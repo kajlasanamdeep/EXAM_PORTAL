@@ -7,13 +7,14 @@ const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
 const messages = messageList.MESSAGES;
 
-module.exports.createCourse = async function (payload) {
+module.exports.createCourse = async function (req) {
     try {
 
+        let payload = req.body;
         let existingCourse = await Model.courses.findOne({
+            name: payload.name,
             examinerID: payload.examinerID,
-            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE,
-            name: payload.name
+            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE
         });
 
         if (existingCourse) return {
@@ -38,10 +39,10 @@ module.exports.createCourse = async function (payload) {
     }
 };
 
-module.exports.getDashboard = async function (payload) {
+module.exports.getDashboard = async function (req) {
     try {
 
-        let examiner = payload.loggedUser;
+        let examiner = req.loggedUser;
 
         let courses = await Model.courses.find({
             examinerID: examiner._id,
@@ -64,15 +65,17 @@ module.exports.getDashboard = async function (payload) {
     }
 }
 
-module.exports.addStudent = async function (payload) {
+module.exports.addStudent = async function (req) {
     try {
 
-        let user = await Model.users.findOne({$or:[{ email: payload.email },{mobileNumber:payload.mobileNumber}]});
+        let payload = req.body;
+        let user = await Model.users.findOne({ $or: [{ email: payload.email }, { mobileNumber: payload.mobileNumber }] },{password:0,status:0});
 
         if (!user) {
-            user = await Model.users.create(payload);
-        }
 
+            user = await Model.users.create(payload);
+
+        }
         else if (user.userType != "STUDENT") {
 
             let message = user.email == payload.email ? messages.EMAIL_ALREDAY_TAKEN : messages.MOBILE_NUMBER_ALREADY_TAKEN;
@@ -80,7 +83,19 @@ module.exports.addStudent = async function (payload) {
             return {
                 status: statusCodes.UNPROCESSABLE_ENTITY,
                 message: message
-            };
+            }
+
+        }
+        else if (user.email != payload.email || user.lastName != payload.lastName || user.firstName != payload.firstName || user.mobileNumber != payload.mobileNumber) {
+
+            return {
+                status: statusCodes.UNPROCESSABLE_ENTITY,
+                message: messages.INCORRECT_DETAILS,
+                data:{
+                    existingStudent:user
+                }
+            }
+
         }
 
         else {
@@ -89,14 +104,26 @@ module.exports.addStudent = async function (payload) {
                 courseID: payload.courseID,
                 userID: user._id
             });
-    
+
             if (existingStudent) return {
                 status: statusCodes.UNPROCESSABLE_ENTITY,
                 message: messages.STUDENT_WITH_THIS_DETAILS_ALREADY_REGISTERED
             }
-    
+
             let password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
-            user = await Model.users.findByIdAndUpdate(user._id, { $set: { password: password } }, { new: true });
+
+            let fieldsToUpdate = {
+                password: password
+            };
+
+            let options = {
+                new: true,
+                projection: {
+                    password: 0
+                }
+            };
+
+            user = await Model.users.findByIdAndUpdate(user._id, fieldsToUpdate, options);
         }
 
         payload.userID = user._id;
@@ -117,19 +144,20 @@ module.exports.addStudent = async function (payload) {
     }
 }
 
-module.exports.getStudent = async function (payload) {
+module.exports.getStudents = async function (req) {
     try {
+        let payload = req.params;
         let course = await Model.courses.findById(payload.courseID);
 
-        if(course.examinerID != payload.examinerID) return{
-            status:statusCodes.NOT_FOUND,
-            message:messages.COURSE_NOT_FOUND
+        if (course.examinerID != payload.examinerID) return {
+            status: statusCodes.NOT_FOUND,
+            message: messages.COURSE_NOT_FOUND
         };
 
         let students = await Model.students.aggregate([
             {
-                $match:{
-                    courseID : mongoose.Types.ObjectId(payload.courseID)
+                $match: {
+                    courseID: mongoose.Types.ObjectId(payload.courseID)
                 }
             },
             {
@@ -149,36 +177,36 @@ module.exports.getStudent = async function (payload) {
                 }
             },
             {
-                $unwind:"$details"
+                $unwind: "$details"
             },
             {
-                $unwind:"$course"
+                $unwind: "$course"
             },
             {
                 $project: {
-                    fatherName:"$fatherName",
-                    motherName:"$motherName",
-                    DOB:"$dob",
-                    address:"$address",
-                    gender:"$gender",
-                    course:"$course.name",
-                    name:"$details.firstName",
-                    email:"$details.email",
-                    mobilenumber:"$details.mobileNumber"
+                    dob: "$dob",
+                    gender: "$gender",
+                    address: "$address",
+                    course: "$course.name",
+                    email: "$details.email",
+                    motherName: "$motherName",
+                    fatherName: "$fatherName",
+                    name: "$details.firstName",
+                    mobilenumber: "$details.mobileNumber",
                 }
             }
         ]);
 
-        let count = await Model.students.countDocuments({courseID:payload.courseID});
+        let count = await Model.students.countDocuments({ courseID: payload.courseID });
 
         return {
-            status:statusCodes.SUCCESS,
-            message: messages.STUDENTS,
-            data:{
-                students:students,
-                count:count
+            status: statusCodes.SUCCESS,
+            message: messages.SUCCESS,
+            data: {
+                count: count,
+                students: students
             }
-        };
+        }
     }
     catch (error) {
 

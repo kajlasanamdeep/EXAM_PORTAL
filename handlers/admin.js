@@ -6,10 +6,10 @@ const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
 const messages = messageList.MESSAGES;
 
-module.exports.getDashboard = async function (payload) {
+module.exports.getDashboard = async function (req) {
   try {
 
-    let adminDetails = payload.loggedUser;
+    let adminDetails = req.loggedUser;
 
     return {
       status: statusCodes.SUCCESS,
@@ -26,9 +26,10 @@ module.exports.getDashboard = async function (payload) {
   }
 }
 
-module.exports.approveOrDeclineExaminer = async function (payload) {
+module.exports.approveOrDeclineExaminer = async function (req) {
   try {
 
+    let payload = req.body;
     let _id = mongoose.Types.ObjectId(payload.examinerID);
 
     let fieldsToUpdate = {
@@ -36,13 +37,14 @@ module.exports.approveOrDeclineExaminer = async function (payload) {
     };
 
     let options = {
-      new: true
+      new: true,
+      projection: {
+        password: 0
+      }
     };
 
     let upatedExaminer = await Model.users.findByIdAndUpdate(_id, fieldsToUpdate, options);
-    let message = upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED ? 
-                                            messages.USER_APPROVED_SUCCESSFULLY : upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.DECLINED ?
-                                            messages.USER_DECLINED_SUCCESSFULLY : messages.USER_DELETED_SUCCESSFULLY;
+    let message = (upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) ? messages.USER_APPROVED_SUCCESSFULLY : messages.USER_DECLINED_SUCCESSFULLY;
 
     return {
       status: statusCodes.SUCCESS,
@@ -60,22 +62,27 @@ module.exports.approveOrDeclineExaminer = async function (payload) {
 module.exports.getExaminers = async function (req) {
   try {
 
+    let payload = req.params;
     let query = {
       $and: [
         { userType: APP_CONSTANTS.ACCOUNT_TYPE.EXAMINER }
       ]
     };
 
-    if (req.params.status == "pending") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING });
-    else if (req.params.status == "approved") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED });
-    else if (req.params.status == "declined") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DECLINED });
-    else if (req.params.status == "deleted") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DELETED });
-    else if (req.params.status != "all") return{
-      status:statusCodes.NOT_FOUND,
-      message:messages.INVALID_URL
+    if (payload.status == "pending") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.PENDING });
+    else if (payload.status == "approved") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED });
+    else if (payload.status == "declined") query.$and.push({ status: APP_CONSTANTS.ACCOUNT_STATUS.DECLINED });
+    else if (payload.status) return {
+      status: statusCodes.NOT_FOUND,
+      message: messages.INVALID_URL
     };
 
-    let Examiners = await Model.users.find(query);
+    let projection = {
+      password: 0,
+      userType: 0
+    };
+
+    let Examiners = await Model.users.find(query, projection);
     let count = await Model.users.countDocuments(query);
 
     return {
@@ -84,7 +91,7 @@ module.exports.getExaminers = async function (req) {
       data: {
         count: count,
         Examiners: Examiners
-      },
+      }
     };
 
   } catch (error) {
