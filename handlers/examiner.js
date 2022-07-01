@@ -39,6 +39,38 @@ module.exports.createCourse = async function (req) {
     }
 };
 
+module.exports.addSubject = async function (req) {
+    try {
+
+        let payload = req.body;
+        let existingCourse = await Model.subjects.findOne({
+            name: payload.name,
+            courseID: payload.courseID,
+            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE
+        });
+
+        if (existingCourse) return {
+            status: statusCodes.UNPROCESSABLE_ENTITY,
+            message: messages.SUBJECT_ALREADY_EXIST
+        }
+
+        let subject = await Model.subjects.create(payload);
+
+        return {
+            status: statusCodes.CREATED,
+            message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
+            data: {
+                subject:subject
+            }
+        }
+
+    } catch (error) {
+
+        throw error;
+
+    }
+};
+
 module.exports.getDashboard = async function (req) {
     try {
 
