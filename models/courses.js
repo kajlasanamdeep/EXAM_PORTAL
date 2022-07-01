@@ -4,15 +4,15 @@ const APP_CONSTANTS = require("../constant/APP_CONSTANTS");
 
 const courseStatus = [
   APP_CONSTANTS.COURSE_STATUS.ACTIVE,
-  APP_CONSTANTS.COURSE_STATUS.DELETED,
-  APP_CONSTANTS.COURSE_STATUS.BLOCKED,
+  APP_CONSTANTS.COURSE_STATUS.DELETED
 ];
 
 const Schema = mongoose.Schema;
 const CourseModel = new Schema({
   examinerID: {
     type: Schema.Types.ObjectId,
-    required: true,
+    ref:'users',
+    required: true
   },
   name:{
     type: String,
@@ -21,20 +21,20 @@ const CourseModel = new Schema({
   description: {
     type: String,
     required: true,
-    trim: true,
+    trim: true
   },
   status: {
     type: String,
     enum: courseStatus,
-    default: APP_CONSTANTS.COURSE_STATUS.ACTIVE
+    default: courseStatus[0]
   },
   createdDate: {
     type: Date,
-    default: new Date(),
+    default: new Date()
   },
   modifiedDate: {
     type: Date,
-    default: new Date(),
+    default: new Date()
   }
 });
 

@@ -2,8 +2,8 @@ module.exports = {
     ACCOUNT_STATUS:{
         PENDING:'PENDING',                     
         APPROVED:'APPROVED',
-        DELETED:'DELETED',
-        DECLINED:'DECLINED'
+        DECLINED:'DECLINED',
+        DELETED: 'DELETED'
     },
     ACCOUNT_TYPE:{
         EXAMINER:'EXAMINER',
@@ -12,8 +12,7 @@ module.exports = {
     },
     COURSE_STATUS: {
 		ACTIVE: 'ACTIVE',
-		DELETED: 'DELETED',
-		BLOCKED: 'BLOCKED',
+		DELETED: 'DELETED'
 	},
     STUDENT_GENDER:{
         MALE:'MALE',
@@ -22,8 +21,6 @@ module.exports = {
     },
     SUBJECT_STATUS:{
         ACTIVE: 'ACTIVE',
-		DELETED: 'DELETED',
-		BLOCKED: 'BLOCKED'
-
+		DELETED: 'DELETED'
     }
 }

@@ -11,8 +11,8 @@ const Schema = mongoose.Schema;
 const StudentModel = new Schema({
     userID:{
         type: Schema.Types.ObjectId,
-		required: true,
-        ref:'users'
+        ref:'users',
+		required: true
     },
     fatherName: { 
         type: String, 
@@ -23,7 +23,7 @@ const StudentModel = new Schema({
         required: true 
     },
     dob: { 
-        type: String, 
+        type: String,
         required: true 
     },
 	address: { 
@@ -39,9 +39,9 @@ const StudentModel = new Schema({
         required: true 
     },
     gender: { 
-        type: String, 
-        required: true, 
-        enum: gender 
+        type: String,
+        enum: gender,
+        required: true
     },
     courseID: {
         type:Schema.Types.ObjectId,

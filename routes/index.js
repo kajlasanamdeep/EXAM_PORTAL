@@ -1,5 +1,5 @@
 module.exports = {
-    routes:require('./routes'),
-    admin:require('./admin.routes'),
-    examiner:require('./examiner.routes')
+    user:require('./user'),
+    admin:require('./admin'),
+    examiner:require('./examiner')
 }

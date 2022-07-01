@@ -19,7 +19,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
-app.use('/', Routes.routes);
+app.use('/', Routes.user);
 app.use('/admin', Routes.admin);
 app.use('/examiner', Routes.examiner);
 

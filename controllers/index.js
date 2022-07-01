@@ -1,6 +1,6 @@
 module.exports = {
-    user:require('./user.controllers'),
-    admin:require('./admin.controllers'),
-    admin:require('./admin.controllers'),
-    examiner:require('./examiner.controllers')
+    user:require('./user'),
+    admin:require('./admin'),
+    admin:require('./admin'),
+    examiner:require('./examiner')
 }

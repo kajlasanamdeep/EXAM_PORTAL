@@ -5,11 +5,11 @@ const statusCodeList = require("../statusCodes/statusCodes");
 const statusCodes = statusCodeList.STATUS_CODE;
 const messages = messageList.MESSAGES;
 const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
-const { default: mongoose } = require('mongoose');
 
-module.exports.register = async function (payload) {
+module.exports.register = async function (req) {
     try {
 
+        let payload = req.body;
         let existingUser = await Model.users.findOne({
             $or: [
                 { email: payload.email },
@@ -50,9 +50,10 @@ module.exports.register = async function (payload) {
 
 
 
-module.exports.login = async function (payload) {
+module.exports.login = async function (req) {
     try {
 
+        let payload = req.body;
         let user = await Model.users.findOne({
             email: payload.email
         });
@@ -74,12 +75,7 @@ module.exports.login = async function (payload) {
         if (user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return {
             status: statusCodes.FORBIDDEN,
             message: messages.USER_NOT_ALLOWDED_TO_LOGIN
-        }
-        if (user.status != APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) return {
-            status: statusCodes.FORBIDDEN,
-            message: messages.USER_NOT_ALLOWDED_TO_LOGIN
         };
-
 
         let accessToken = await universalFunction.jwtSign(user);
 

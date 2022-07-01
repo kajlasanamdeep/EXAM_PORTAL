@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const controller = require('../controllers').examiner;
 const userAuthorization = require('../auth/user.authorization');
-const verify = require('../middleware/verify')
+const verify = require('../middelwares/verify')
 
 router.post('/course',userAuthorization,verify.isExaminer,controller.createCourse);
 router.get('/dashboard',userAuthorization,verify.isExaminer,controller.getDashboard);
