@@ -186,3 +186,17 @@ module.exports.getStudent = async function (payload) {
 
     }
 }
+
+module.exports.addSubject = async function (payload) {
+
+   let subjects = await payload.forEach( sub =>{
+    Model.subject.create(sub)
+   })
+
+   return {
+    status:statusCodes.SUCCESS,
+    message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
+    data:{}
+   }
+   
+}

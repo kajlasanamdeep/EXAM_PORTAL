@@ -1,6 +1,6 @@
 module.exports = {
     users:require('./users'),
     courses:require('./courses'),
-    students:require('./students')
-
+    students:require('./students'),
+    subject:require('./subject')
 }

@@ -36,12 +36,13 @@ module.exports.approveOrDeclineExaminer = async function (payload) {
     };
 
     let options = {
-      new: true
+      new: true,
+      projection:{password:0}
     };
 
-    let upatedExaminer = await Model.users.findByIdAndUpdate(_id, fieldsToUpdate, options);
-    let message = upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED ? 
-                                            messages.USER_APPROVED_SUCCESSFULLY : upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.DECLINED ?
+    let upatedExaminer = await Model.users.findByIdAndUpdate(_id, fieldsToUpdate,options);
+    let message = (upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.APPROVED) ? 
+                                            messages.USER_APPROVED_SUCCESSFULLY : (upatedExaminer.status == APP_CONSTANTS.ACCOUNT_STATUS.DECLINED)?
                                             messages.USER_DECLINED_SUCCESSFULLY : messages.USER_DELETED_SUCCESSFULLY;
 
     return {
@@ -75,7 +76,7 @@ module.exports.getExaminers = async function (req) {
       message:messages.INVALID_URL
     };
 
-    let Examiners = await Model.users.find(query);
+    let Examiners = await Model.users.find(query,{password:0});
     let count = await Model.users.countDocuments(query);
 
     return {

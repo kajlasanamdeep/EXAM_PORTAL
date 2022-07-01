@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
             let userData = await users.findOne({
                 _id: mongoose.Types.ObjectId(decodedData._id),
                 status: APP_CONSTANTS.ACCOUNT_STATUS.APPROVED
-            });
+            },{password:0});
 
             if (userData) {
 
