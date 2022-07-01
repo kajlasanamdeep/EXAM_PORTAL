@@ -218,7 +218,7 @@ module.exports.getStudents = async function (req) {
 module.exports.addSubject = async function (payload) {
 
    let subjects = await payload.forEach( sub =>{
-    Model.subject.create(sub)
+    Model.subjects.create(sub)
    })
 
    return {
