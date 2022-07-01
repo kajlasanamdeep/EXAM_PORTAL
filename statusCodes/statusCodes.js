@@ -1,5 +1,6 @@
 "use strict";
 const STATUS_CODE={
+	DUPLICATE:409,
 	SUCCESS:200,
 	CREATED:201,
 	BAD_REQUEST:400,
