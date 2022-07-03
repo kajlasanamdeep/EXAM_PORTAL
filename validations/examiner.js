@@ -13,6 +13,7 @@ module.exports.courseSchema = {
         name: joi.string().required().max(12).uppercase().error(() => Error('Course Name Is Not Valid')),
         description: joi.string().required().error(() => Error('Course Description Is Not Valid'))
     })
+    
 };
 
 module.exports.subjectSchema = {
