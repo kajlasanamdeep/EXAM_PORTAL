@@ -68,4 +68,15 @@ module.exports.getStudents = async function (req,res) {
 //       return universalFunction.errorResponse(res, error);
 //     }
 //   };
+
+module.exports.viewSubject = async function (req,res) {
+    try{
+        
+
+    }
+    catch (error) {
+              return universalFunction.errorResponse(res, error);
+            }
+}
+
   

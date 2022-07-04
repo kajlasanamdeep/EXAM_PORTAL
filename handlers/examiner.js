@@ -5,7 +5,7 @@ const statusCodeList = require("../statusCodes/statusCodes");
 const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
-const subjects = require("../models/subjects");
+
 const messages = messageList.MESSAGES;
 
 module.exports.createCourse = async function (req) {
@@ -239,3 +239,15 @@ module.exports.getStudents = async function (req) {
 //     data: {},
 //   };
 // };
+
+module.exports.viewSubject = async function (req) {
+  try{
+    let payload = req.params;
+    let course = await Model.courses.findById(payload.courseID);
+      
+
+  }
+  catch (error) {
+    throw error;
+  }
+}
