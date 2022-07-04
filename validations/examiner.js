@@ -53,3 +53,9 @@ module.exports.addStudentSchema = {
         gender: joi.string().valid(...genders).required().error(() => Error('Gender Is Not Valid'))
     })
 }
+
+module.exports.addSubjectSchema = {
+    body: joi.object({
+        name: joi.string().required()
+    })
+}
