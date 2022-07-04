@@ -264,7 +264,8 @@ module.exports.getSubjects = async function (req) {
     let subjects = await Model.courses.aggregate([
       {
         $match:{
-          _id:mongoose.Types.ObjectId(payload.courseID)
+          _id:mongoose.Types.ObjectId(payload.courseID),
+          status:APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
         }
       },
       {
@@ -286,7 +287,7 @@ module.exports.getSubjects = async function (req) {
         }
       }
     ]);
-    
+
     return {
       status:statusCodes.SUCCESS,
       message:messages.SUBJECTS_LOADED_SUCCESSFULLY,
