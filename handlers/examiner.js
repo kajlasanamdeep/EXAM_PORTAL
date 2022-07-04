@@ -291,7 +291,6 @@ module.exports.viewSubject = async function (req) {
       status:statusCodes.SUCCESS,
       message:messages.SUBJECTS,
       data: {
-        course:subjects[0].course,
         count:count,
         subjects: subjects,
       },
