@@ -59,6 +59,23 @@ module.exports.approveOrDeclineExaminer = async function (req) {
 
 };
 
+module.exports.deleteExaminer  =async function(req) {
+  try{
+    let payload = req.body;
+    let _id = mongoose.Types.ObjectId(payload.examinerID);
+    await Model.users.findByIdAndDelete(_id);
+    
+    return {
+      status: statusCodes.SUCCESS,
+      message: messages.USER_DELETED_SUCCESSFULLY
+    }
+  }
+  catch (error) {
+
+    throw error;
+
+  }
+}
 module.exports.getExaminers = async function (req) {
   try {
 
