@@ -39,28 +39,37 @@ module.exports.createCourse = async function (req) {
     }
 };
 
-module.exports.addSubject = async function (req) {
+module.exports.addSubjects = async function (req) {
     try {
 
-        let payload = req.body;
-        let existingCourse = await Model.subjects.findOne({
-            name: payload.name,
-            courseID: payload.courseID,
-            status: APP_CONSTANTS.COURSE_STATUS.ACTIVE
-        });
+        let payload = req.body.subjects;
+        for (let i in payload) {
+            if(payload.findIndex((e)=>e.name==payload[i].name)!=i){
+                return {
+                    status:statusCodes.DUPLICATE,
+                    message: messages.DUPLICATE_ENTRY
+                }
+            }
 
-        if (existingCourse) return {
-            status: statusCodes.UNPROCESSABLE_ENTITY,
-            message: messages.SUBJECT_ALREADY_EXIST
-        }
+            let existingSubject = await Model.subjects.findOne({
+                name: payload[i].name,
+                courseID: payload[i].courseID,
+                status: APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
+            });
+    
+            if (existingSubject) return {
+                status: statusCodes.UNPROCESSABLE_ENTITY,
+                message: messages.SUBJECT_ALREADY_EXIST
+            }
+        };    
 
-        let subject = await Model.subjects.create(payload);
+        let subjects = await Model.subjects.insertMany(payload);
 
         return {
             status: statusCodes.CREATED,
             message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
             data: {
-                subject:subject
+                subjects:subjects
             }
         }
 

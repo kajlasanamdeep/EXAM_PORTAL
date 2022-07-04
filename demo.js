@@ -8,5 +8,4 @@ function check() {
     };
 }
 
-
 console.log(check());

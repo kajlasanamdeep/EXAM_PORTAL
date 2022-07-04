@@ -16,10 +16,10 @@ module.exports.createCourse = async function (req,res) {
     }
 };
 
-module.exports.addSubject = async function (req,res) {
+module.exports.addSubjects = async function (req,res) {
     try {
 
-        const response = await Handler.examiner.addSubject(req);
+        const response = await Handler.examiner.addSubjects(req);
         return universalFunction.sendResponse(res,response.status,response.message,response.data);
 
     } catch (error) {

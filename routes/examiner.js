@@ -6,7 +6,7 @@ const { courseSchema, getStudentsSchema, addStudentSchema, subjectSchema } = req
 
 router.get('/dashboard', authorize(ACCOUNT_TYPE.EXAMINER), examiner.getDashboard);
 router.post('/course', authorize(ACCOUNT_TYPE.EXAMINER), validate(courseSchema), examiner.createCourse);
-router.post('/subject', authorize(ACCOUNT_TYPE.EXAMINER), validate(subjectSchema), examiner.addSubject);
+router.post('/subjects', authorize(ACCOUNT_TYPE.EXAMINER), validate(subjectSchema), examiner.addSubjects);
 router.post('/student', authorize(ACCOUNT_TYPE.EXAMINER), validate(addStudentSchema), examiner.addStudent);
 router.get('/students/:courseID', authorize(ACCOUNT_TYPE.EXAMINER), validate(getStudentsSchema), examiner.getStudents);
 
