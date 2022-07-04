@@ -76,6 +76,8 @@ module.exports.getStudents = async function (req,res) {
 module.exports.viewSubject = async function (req,res) {
     try{
         
+        const response = await Handler.examiner.viewSubject(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
     }
     catch (error) {

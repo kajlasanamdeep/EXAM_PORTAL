@@ -259,7 +259,44 @@ module.exports.getStudents = async function (req) {
 module.exports.viewSubject = async function (req) {
   try{
     let payload = req.params;
-    let course = await Model.courses.findById(payload.courseID);
+    let subjects = await Model.subjects.aggregate([
+      {
+        $match:{
+          courseID:mongoose.Types.ObjectId(payload.courseID)
+        }
+      },
+      {
+        $lookup:{
+          from: "courses",
+          localField: "courseID",
+          foreignField: "_id",
+          as: "course",
+        }
+      },
+      {
+        $unwind: "$course",
+      },
+      {
+        $project: {
+          course:"$course.name",
+         subject:"$name"
+        },
+      },
+    ]);
+    let count = await Model.subjects.countDocuments({
+      courseID: payload.courseID,
+    });
+    
+    return {
+      status:statusCodes.SUCCESS,
+      message:messages.SUBJECTS,
+      data: {
+        course:subjects[0].course,
+        count:count,
+        subjects: subjects,
+      },
+    }
+
       
 
   }
