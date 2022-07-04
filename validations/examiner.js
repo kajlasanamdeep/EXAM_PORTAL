@@ -35,6 +35,13 @@ module.exports.getStudentsSchema = {
     })
 }
 
+module.exports.getSubjectsSchema = {
+
+    params: joi.object({
+        courseID: joi.string().hex().length(24).required().error(() => Error('CourseID Is Not Valid'))
+    })
+}
+
 module.exports.addStudentSchema = {
 
     body: joi.object({

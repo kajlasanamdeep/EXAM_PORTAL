@@ -73,10 +73,10 @@ module.exports.getStudents = async function (req,res) {
     }
 }
 
-module.exports.viewSubject = async function (req,res) {
+module.exports.getSubjects = async function (req,res) {
     try{
         
-        const response = await Handler.examiner.viewSubject(req);
+        const response = await Handler.examiner.getSubjects(req);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
     }

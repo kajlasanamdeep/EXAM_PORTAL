@@ -96,7 +96,9 @@ module.exports.getDashboard = async function (req) {
       },
     };
   } catch (error) {
+
     throw error;
+
   }
 };
 
@@ -256,49 +258,43 @@ module.exports.getStudents = async function (req) {
 };
 
 
-module.exports.viewSubject = async function (req) {
+module.exports.getSubjects = async function (req) {
   try{
     let payload = req.params;
-    let subjects = await Model.subjects.aggregate([
+    let subjects = await Model.courses.aggregate([
       {
         $match:{
-          courseID:mongoose.Types.ObjectId(payload.courseID)
+          _id:mongoose.Types.ObjectId(payload.courseID)
         }
       },
       {
         $lookup:{
-          from: "courses",
-          localField: "courseID",
-          foreignField: "_id",
-          as: "course",
+          from: "subjects",
+          localField: "_id",
+          foreignField: "courseID",
+          as: "subjects",
         }
       },
       {
-        $unwind: "$course",
+        $unwind:"$subjects"
       },
       {
-        $project: {
-          course:"$course.name",
-         subject:"$name"
-        },
-      },
+        $project:{
+          name:"$subjects.name",
+          course:"$name",
+          examinerID:"$examinerID"
+        }
+      }
     ]);
-    let count = await Model.subjects.countDocuments({
-      courseID: payload.courseID,
-    });
     
     return {
       status:statusCodes.SUCCESS,
-      message:messages.SUBJECTS,
-      data: {
-        course:subjects[0].course,
-        count:count,
-        subjects: subjects,
-      },
+      message:messages.SUBJECTS_LOADED_SUCCESSFULLY,
+      data:{
+        count: subjects.length,
+        subjects:subjects
+      }
     }
-
-      
-
   }
   catch (error) {
     throw error;
