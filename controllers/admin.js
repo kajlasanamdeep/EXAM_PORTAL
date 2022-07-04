@@ -13,9 +13,21 @@ module.exports.approveOrDeclineExaminer = async function (req, res) {
         return universalFunction.errorResponse(res, error);
 
     }
+    
 
 };
 
+module.exports.deleteExaminer = async function (req,res) {
+    try{
+        const response = await Handler.admin.deleteExaminer(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+}
 module.exports.getExaminers = async function (req, res) {
     try {
 

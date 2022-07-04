@@ -13,3 +13,11 @@ module.exports.actionSchema = {
     })
     
 }
+
+module.exports.deleteSchema = {
+
+    body : joi.object({
+        examinerID: joi.string().hex().length(24).required().error(() => Error('ExaminerID Is Not Valid'))
+    })
+    
+}
