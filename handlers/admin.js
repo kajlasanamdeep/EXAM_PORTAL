@@ -61,7 +61,7 @@ module.exports.approveOrDeclineExaminer = async function (req) {
 
 module.exports.deleteExaminer  =async function(req) {
   try{
-    let payload = req.body;
+    let payload = req.params;
     let _id = mongoose.Types.ObjectId(payload.examinerID);
     await Model.users.findByIdAndDelete(_id);
     
