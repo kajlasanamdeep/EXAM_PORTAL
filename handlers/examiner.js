@@ -255,31 +255,6 @@ module.exports.getStudents = async function (req) {
   }
 };
 
-// module.exports.addSubject = async function (req) {
-//     let payload = req.body.subjects;
-//   let course = [];
-//   await payload.forEach((elem) => {
-//     course.push(elem.name);
-//   });
-//   let x = new Set(course);
-//   let y = [...x];
-//   if (payload.length > y.length) {
-//     return {
-//       status: statusCodes.DUPLICATE,
-//       message: messages.DUPLICATE_ENTRY,
-//     };
-//   }
-
-//   let subjects = await payload.forEach((sub) => {
-//     Model.subjects.create(sub);
-//   });
-
-//   return {
-//     status: statusCodes.SUCCESS,
-//     message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
-//     data: {},
-//   };
-// };
 
 module.exports.viewSubject = async function (req) {
   try{

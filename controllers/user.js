@@ -18,7 +18,7 @@ module.exports.register = async function (req, res) {
 
 module.exports.login = async function (req, res) {
     try {
-
+        
         const response = await Handler.user.login(req);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
