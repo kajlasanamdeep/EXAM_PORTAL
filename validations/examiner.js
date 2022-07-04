@@ -13,6 +13,19 @@ module.exports.courseSchema = {
         name: joi.string().required().max(12).uppercase().error(() => Error('Course Name Is Not Valid')),
         description: joi.string().required().error(() => Error('Course Description Is Not Valid'))
     })
+    
+};
+
+module.exports.subjectSchema = {
+
+    body: joi.object({
+            subjects:joi.array().items(
+                joi.object({
+                    name: joi.string().required().max(12).uppercase().error(() => Error('Subject Name Is Not Valid')),
+                    courseID: joi.string().hex().length(24).required().error(() => Error('CourseID Is Not Valid'))
+                })
+            )
+        })    
 };
 
 module.exports.getStudentsSchema = {

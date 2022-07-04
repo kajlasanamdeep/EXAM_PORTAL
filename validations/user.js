@@ -18,5 +18,5 @@ module.exports.userRegistrationSchema = {
         mobileNumber: joi.string().min(10).max(12).required().error(() => Error('Mobile Number Is Not Valid!')),
         password: joi.string().min(6).required().error(() => Error('Password Is Not Valid!'))
     })
-
+    
 };
