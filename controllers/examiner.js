@@ -60,12 +60,12 @@ module.exports.getStudents = async function (req,res) {
     }
 }
 
-module.exports.addSubject = async function (req, res) {
-    try {
-      const response = await Handler.examiner.addSubject(req);
-      return universalFunction.sendResponse(res, response.status, response.message, response.data);
-    } catch (error) {
-      return universalFunction.errorResponse(res, error);
-    }
-  };
+// module.exports.addSubject = async function (req, res) {
+//     try {
+//       const response = await Handler.examiner.addSubject(req);
+//       return universalFunction.sendResponse(res, response.status, response.message, response.data);
+//     } catch (error) {
+//       return universalFunction.errorResponse(res, error);
+//     }
+//   };
   
