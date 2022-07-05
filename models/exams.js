@@ -35,10 +35,6 @@ const examModel = new Schema({
         type: Date,
          required:true
     },
-    endTime: {
-        type: String,
-         required:true
-    },
     duration: {
         type: String,
          required:true
@@ -59,11 +55,11 @@ const examModel = new Schema({
     },
     totalMarks: {
         type: Number,
-         required:true
+        required:true
     },
     passingMarks: {
         type: Number,
-         required:true
+        required:true
     },
     examinerID: {
         type: Schema.Types.ObjectId,
