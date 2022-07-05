@@ -38,44 +38,44 @@ module.exports.createCourse = async function (req) {
 };
 
 module.exports.addSubjects = async function (req) {
-    try {
+  try {
 
-        let payload = req.body.subjects;
-        for (let i in payload) {
-            if(payload.findIndex((e)=>e.name == payload[i].name) != i){
-                return {
-                    status:statusCodes.DUPLICATE,
-                    message: messages.DUPLICATE_ENTRY
-                }
-            }
-
-            let existingSubject = await Model.subjects.findOne({
-                name: payload[i].name,
-                courseID: payload[i].courseID,
-                status: APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
-            });
-    
-            if (existingSubject) return {
-                status: statusCodes.UNPROCESSABLE_ENTITY,
-                message: messages.SUBJECT_ALREADY_EXIST
-            }
-        };    
-
-        let subjects = await Model.subjects.insertMany(payload);
-
+    let payload = req.body.subjects;
+    for (let i in payload) {
+      if (payload.findIndex((e) => e.name == payload[i].name) != i) {
         return {
-            status: statusCodes.CREATED,
-            message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
-            data: {
-                subjects:subjects
-            }
+          status: statusCodes.DUPLICATE,
+          message: messages.DUPLICATE_ENTRY
         }
+      }
 
-    } catch (error) {
+      let existingSubject = await Model.subjects.findOne({
+        name: payload[i].name,
+        courseID: payload[i].courseID,
+        status: APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
+      });
 
-        throw error;
+      if (existingSubject) return {
+        status: statusCodes.UNPROCESSABLE_ENTITY,
+        message: messages.SUBJECT_ALREADY_EXIST
+      }
+    };
 
+    let subjects = await Model.subjects.insertMany(payload);
+
+    return {
+      status: statusCodes.CREATED,
+      message: messages.SUBJECT_REGISTERED_SUCCESSFULLY,
+      data: {
+        subjects: subjects
+      }
     }
+
+  } catch (error) {
+
+    throw error;
+
+  }
 };
 
 module.exports.getDashboard = async function (req) {
@@ -267,7 +267,7 @@ module.exports.getStudents = async function (req) {
 
 
 module.exports.getSubjects = async function (req) {
-  try{
+  try {
     let payload = req.params;
     let course = await Model.courses.findById(payload.courseID);
 
@@ -279,13 +279,13 @@ module.exports.getSubjects = async function (req) {
 
     let subjects = await Model.courses.aggregate([
       {
-        $match:{
-          _id:mongoose.Types.ObjectId(payload.courseID),
-          status:APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
+        $match: {
+          _id: mongoose.Types.ObjectId(payload.courseID),
+          status: APP_CONSTANTS.SUBJECT_STATUS.ACTIVE
         }
       },
       {
-        $lookup:{
+        $lookup: {
           from: "subjects",
           localField: "_id",
           foreignField: "courseID",
@@ -293,28 +293,59 @@ module.exports.getSubjects = async function (req) {
         }
       },
       {
-        $unwind:"$subjects"
+        $unwind: "$subjects"
       },
       {
-        $project:{
-          name:"$subjects.name",
-          subjectID:"$subjects._id",
-          course:"$name",
-          examinerID:"$examinerID"
+        $project: {
+          name: "$subjects.name",
+          subjectID: "$subjects._id",
+          course: "$name",
+          examinerID: "$examinerID"
         }
       }
     ]);
 
     return {
-      status:statusCodes.SUCCESS,
-      message:messages.SUBJECTS_LOADED_SUCCESSFULLY,
-      data:{
+      status: statusCodes.SUCCESS,
+      message: messages.SUBJECTS_LOADED_SUCCESSFULLY,
+      data: {
         count: subjects.length,
-        subjects:subjects
+        subjects: subjects
       }
     }
   }
   catch (error) {
     throw error;
+  }
+}
+
+module.exports.createExam = async function (req) {
+  try {
+
+    let payload = req.body;
+    let subject = await Model.subjects.findById(payload.subjectID);
+    let course = await Model.courses.findById(subject.courseID);
+    if (course.examinerID != payload.examinerID)
+      return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.COURSE_NOT_FOUND,
+      };
+    
+    let exam = await Model.exams.create(payload);
+
+    for(let i in payload.questions){
+      let question = payload.question[i];
+      await Model.questions.create({...question,examID:exam._id});
+    }
+    
+    return {
+      status:statusCodes.CREATED,
+      message:messages.EXAM_CREATED_SUCCESSFULLY
+    }
+  }
+  catch (error) {
+
+    throw error;
+
   }
 }
