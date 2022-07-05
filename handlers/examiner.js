@@ -105,6 +105,14 @@ module.exports.getDashboard = async function (req) {
 module.exports.addStudent = async function (req) {
   try {
     let payload = req.body;
+    let course = await Model.courses.findById(payload.courseID);
+
+    if (course.examinerID != payload.examinerID)
+      return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.COURSE_NOT_FOUND,
+      };
+
     let user = await Model.users.findOne(
       {
         $or: [{ email: payload.email }, { mobileNumber: payload.mobileNumber }],
@@ -140,7 +148,7 @@ module.exports.addStudent = async function (req) {
     } else {
       let existingStudent = await Model.students.findOne({
         courseID: payload.courseID,
-        userID: user._id,
+        userID: user._id
       });
 
       if (existingStudent)
@@ -249,7 +257,7 @@ module.exports.getStudents = async function (req) {
       message: messages.SUCCESS,
       data: {
         count: count,
-        students: students,
+        students: students
       },
     };
   } catch (error) {
@@ -261,6 +269,14 @@ module.exports.getStudents = async function (req) {
 module.exports.getSubjects = async function (req) {
   try{
     let payload = req.params;
+    let course = await Model.courses.findById(payload.courseID);
+
+    if (course.examinerID != payload.examinerID)
+      return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.COURSE_NOT_FOUND,
+      };
+
     let subjects = await Model.courses.aggregate([
       {
         $match:{
@@ -282,6 +298,7 @@ module.exports.getSubjects = async function (req) {
       {
         $project:{
           name:"$subjects.name",
+          subjectID:"$subjects._id",
           course:"$name",
           examinerID:"$examinerID"
         }

@@ -34,6 +34,7 @@ module.exports.addStudent = async function(req,res) {
                 
         req.body.userType = APP_CONSTANTS.ACCOUNT_TYPE.STUDENT;
         req.body.status = APP_CONSTANTS.ACCOUNT_STATUS.APPROVED;
+        req.body.examinerID = req.loggedUser.id;
         const response = await Handler.examiner.addStudent(req);
         return universalFunction.sendResponse(res,response.status,response.message,response.data);
         
@@ -75,7 +76,8 @@ module.exports.getStudents = async function (req,res) {
 
 module.exports.getSubjects = async function (req,res) {
     try{
-        
+
+        req.params.examinerID = req.loggedUser.id;
         const response = await Handler.examiner.getSubjects(req);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
