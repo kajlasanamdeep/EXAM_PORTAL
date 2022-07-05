@@ -20,28 +20,28 @@ const questionModel = new Schema({
     },
     marks: {
         type: Number,
-         required:true
+        required:true
     },
-    options: [{
-        key: String, 
-        value: String
-    }],
+    options:{
+        type:[String],
+        required:true
+    },
     correctOption: {
         type: String,
-         required:true
+        required:true
     },
     createdDate: { 
-        type: Number, 
-        default: Date.now 
+        type: String, 
+        default: new Date() 
     },
 	modifiedDate: { 
-        type: Number, 
-        default: Date.now 
+        type: String, 
+        default: new Date()
     },
 	status: { 
-        type: String, 
-        required: true, 
-        enum: questionStatus
+        type: String,
+        enum: questionStatus,
+        default:questionStatus[0]
     }
 });
 

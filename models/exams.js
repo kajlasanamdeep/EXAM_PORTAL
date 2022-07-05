@@ -37,21 +37,23 @@ const examModel = new Schema({
     },
     duration: {
         type: String,
-         required:true
+        required:true
     },
     accessCode: {
         type: String,
-         required:true
+        required:true
     },
     durationStatus: {
         type: String,
         enum: durationStatus,
-         required:true
+        default:durationStatus[1],
+        required:true
     },
     status: {
         type: String,
         enum: examStatus,
-         required:true
+        default:examStatus[0],
+        required:true
     },
     totalMarks: {
         type: Number,

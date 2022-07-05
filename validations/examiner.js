@@ -60,3 +60,25 @@ module.exports.addStudentSchema = {
         gender: joi.string().valid(...genders).required().error(() => Error('Gender Is Not Valid'))
     })
 }
+
+module.exports.createExam = {
+    body: joi.object({
+        subjectID: joi.string().hex().length(24).required().error(() => Error('SubjectID Is Not Valid')),
+        startTime: joi.string().required().error(() => Error('Start Time Is Not Valid')),
+        endTime: joi.string().required().error(() => Error('End Time Is Not Valid')),
+        examDate: joi.string().required().error(() => Error('Exam Date Is Not Valid')),
+        duration: joi.string().required().error(() => Error('Duration Is Not Valid')),
+        accessCode: joi.string().required().error(() => Error('Access Code Is Not Valid')),
+        totalMarks: joi.number().required().error(() => Error('Total Marks Is Not Valid')),
+        passingMarks: joi.number().required().error(() => Error('Passing Marks Is Not Valid')),
+        questions:joi.array().items(
+            joi.object({
+                question: joi.string().required().trim().error(() => Error('Question Is Not Valid')),
+                options: joi.array().items(joi.string().required().error(() => Error('Option Is Not Valid'))),
+                correctOption: joi.string().required().error(() => Error('Correct Option Is Not Valid')),
+                marks: joi.number().required().error(() => Error('Marks Is Not Valid'))
+            })
+        ),
+        students: joi.array().items(joi.string().hex().length(24).required().error(() => Error('StudentID Is Not Valid')))
+    })
+}

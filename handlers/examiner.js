@@ -332,12 +332,12 @@ module.exports.createExam = async function (req) {
       };
     
     let exam = await Model.exams.create(payload);
-
+    
     for(let i in payload.questions){
-      let question = payload.question[i];
+      let question = payload.questions[i];
       await Model.questions.create({...question,examID:exam._id});
     }
-    
+
     return {
       status:statusCodes.CREATED,
       message:messages.EXAM_CREATED_SUCCESSFULLY
