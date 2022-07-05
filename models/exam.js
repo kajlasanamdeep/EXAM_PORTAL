@@ -17,7 +17,7 @@ const examStatus = [
 ]
 
 const Schema = mongoose.Schema;
-const SubjectModel = new Schema({
+const examModel = new Schema({
     subjectID: {
         type: Schema.Types.ObjectId,
         ref: 'subjects',
@@ -71,4 +71,4 @@ const SubjectModel = new Schema({
     },
 });
 
-module.exports = mongoose.model('subjects', SubjectModel);
+module.exports = mongoose.model('exams', examModel);
