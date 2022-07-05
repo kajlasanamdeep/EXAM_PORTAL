@@ -33,5 +33,10 @@ module.exports = {
 		DELETED: 'DELETED',
 		ACTIVE: 'ACTIVE',
 		BLOCKED: 'BLOCKED',
-    }
+    },
+    QUESTION_STATUS: {
+		ACTIVE: 'ACTIVE',
+		INACTIVE: 'INACTIVE',
+		DELETED: 'DELETED',
+	},
 }
