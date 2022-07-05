@@ -22,5 +22,16 @@ module.exports = {
     SUBJECT_STATUS:{
         ACTIVE: 'ACTIVE',
 		DELETED: 'DELETED'
+    },
+    DURATION_STATUS:{
+        NOT_STARTED: "NOT_STARTED",
+        ACTIVE: "ACTIVE",
+        OVER: "OVER"
+    },
+    EXAM_STATUS: {
+        CREATED: 'CREATED',
+		DELETED: 'DELETED',
+		ACTIVE: 'ACTIVE',
+		BLOCKED: 'BLOCKED',
     }
 }
