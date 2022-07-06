@@ -7,7 +7,7 @@ const genders = [
     APP_CONSTANTS.STUDENT_GENDER.OTHER
 ]
 
-module.exports.courseSchema = {
+module.exports.addCourseSchema = {
 
     body: joi.object({
         name: joi.string().required().max(12).uppercase().error(() => Error('Course Name Is Not Valid')),
@@ -16,7 +16,7 @@ module.exports.courseSchema = {
     
 };
 
-module.exports.subjectSchema = {
+module.exports.addSubjectSchema = {
 
     body: joi.object({
             subjects:joi.array().items(
@@ -61,7 +61,7 @@ module.exports.addStudentSchema = {
     })
 }
 
-module.exports.createExam = {
+module.exports.createExamSchema = {
     body: joi.object({
         subjectID: joi.string().hex().length(24).required().error(() => Error('SubjectID Is Not Valid')),
         startTime: joi.string().required().error(() => Error('Start Time Is Not Valid')),
