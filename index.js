@@ -10,7 +10,7 @@ const config = require('./config/config');
 const connection = require('./db/connection');
 const Routes = require('./routes');
 const corsOptions = {
-    origin: 'https://examination-portal.vercel.app/',
+    origin: 'https://examination-portal.vercel.app',
     optionsSuccessStatus: 200
 };
 
