@@ -5,7 +5,7 @@ const statusCodeList = require("../statusCodes/statusCodes");
 const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
-
+const mailer = require("../services/mailer");
 const messages = messageList.MESSAGES;
 
 module.exports.createCourse = async function (req) {
@@ -243,6 +243,7 @@ module.exports.getStudents = async function (req) {
           motherName: "$motherName",
           fatherName: "$fatherName",
           name: "$details.firstName",
+          userID: "$details._id",
           mobilenumber: "$details.mobileNumber",
         },
       },
@@ -330,17 +331,29 @@ module.exports.createExam = async function (req) {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
       };
-    
+
     let exam = await Model.exams.create(payload);
-    
-    for(let i in payload.questions){
+
+    for (let i in payload.questions) {
       let question = payload.questions[i];
-      await Model.questions.create({...question,examID:exam._id});
+      await Model.questions.create({ ...question, examID: exam._id });
+    }
+
+    for (let element of payload.students) {
+      let student = await Model.students.findById(mongoose.Types.ObjectId(element));
+      let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
+      let data = {
+        email:user.email,
+        subject: subject.name,
+        course: course.name,
+        accessCode : payload.accessCode
+      }
+      mailer.sendExamMail(data);
     }
 
     return {
-      status:statusCodes.CREATED,
-      message:messages.EXAM_CREATED_SUCCESSFULLY
+      status: statusCodes.CREATED,
+      message: messages.EXAM_CREATED_SUCCESSFULLY
     }
   }
   catch (error) {
