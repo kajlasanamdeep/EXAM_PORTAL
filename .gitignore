@@ -100,4 +100,4 @@ dist
 .tern-port
 
 demo/
-.env/
+config/.env/
