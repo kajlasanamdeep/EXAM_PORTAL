@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 /* importing files */
-dotenv.config({ path: './config/.env' });
+dotenv.config({ path: './.env' });
 const config = require('./config/config');
 const connection = require('./db/connection');
 const Routes = require('./routes');
