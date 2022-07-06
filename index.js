@@ -10,7 +10,15 @@ const config = require('./config/config');
 const connection = require('./db/connection');
 const Routes = require('./routes');
 const corsOptions = {
-    origin: 'https://examination-portal.vercel.app',
+    // origin: 'https://examination-portal.vercel.app',
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (['http://localhost:3000', 'https://examination-portal.vercel.app'].indexOf(origin) === -1) {
+            let msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
     optionsSuccessStatus: 200
 };
 
@@ -38,5 +46,5 @@ connection.connect().then((connected) => {
 }).catch((error) => {
 
     console.log("Database Connection Error:", error);
-    
+
 });
