@@ -1,5 +1,6 @@
 const sendGridMail = require('@sendgrid/mail');
-sendGridMail.setApiKey('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');
+const config = require('../config/config')
+sendGridMail.setApiKey(config.GRIDAPIKEY);
 
 module.exports = {
     sendRegisterMail : (payload) => {
