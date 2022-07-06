@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/hritiksantoshi/exam-portal#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
