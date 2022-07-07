@@ -349,3 +349,23 @@ module.exports.createExam = async function (req) {
 
   }
 }
+
+module.exports.getStudentById = async function (req) {
+  try{
+    let payload = req.params;
+    let student = await Model.students.find(payload.studentID);
+    return {
+      status: statusCodes.SUCCESS,
+      message: messages.SUCCESS,
+      data: {
+        student: student
+      },
+    };
+       
+  }
+  catch (error) {
+
+    throw error;
+
+  }
+}
