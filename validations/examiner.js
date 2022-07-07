@@ -78,7 +78,7 @@ module.exports.createExamSchema = {
                 correctOption: joi.string().required().error(() => Error('Correct Option Is Not Valid')),
                 marks: joi.number().required().error(() => Error('Marks Is Not Valid'))
             })
-        ),
-        students: joi.array().items(joi.string().hex().length(24).required().error(() => Error('StudentID Is Not Valid')))
+        ).required().error(() => Error('Questions Is Not Valid')),
+        students: joi.array().items(joi.string().hex().length(24).required().error(() => Error('StudentID Is Not Valid'))).required().error(() => Error('Students Is Not Valid'))
     })
 }

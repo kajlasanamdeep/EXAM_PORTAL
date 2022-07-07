@@ -325,6 +325,12 @@ module.exports.createExam = async function (req) {
 
     let payload = req.body;
     let subject = await Model.subjects.findById(payload.subjectID);
+    if (!subject)
+    return {
+      status: statusCodes.NOT_FOUND,
+      message: messages.SUBJECT_NOT_FOUND,
+    };
+
     let course = await Model.courses.findById(subject.courseID);
     if (course.examinerID != payload.examinerID)
       return {
@@ -354,6 +360,7 @@ module.exports.createExam = async function (req) {
     return {
       status: statusCodes.CREATED,
       message: messages.EXAM_CREATED_SUCCESSFULLY
+      
     }
   }
   catch (error) {
