@@ -99,3 +99,17 @@ module.exports.createExam = async function (req,res) {
               return universalFunction.errorResponse(res, error);
     }
 }
+
+module.exports.viewExam = async function (req,res) {
+    try {
+
+        req.body.examinerID = req.loggedUser.id;
+        const response = await Handler.examiner.viewExam(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+
+    } catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }    
+}

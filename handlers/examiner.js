@@ -360,10 +360,70 @@ module.exports.createExam = async function (req) {
     return {
       status: statusCodes.CREATED,
       message: messages.EXAM_CREATED_SUCCESSFULLY
-      
     }
   }
   catch (error) {
+
+    throw error;
+
+  }
+}
+
+module.exports.viewExam = async function (req) {
+  try {
+
+    let examiner = req.loggedUser;
+    let exams = await Model.exams.aggregate([
+      {
+        $match: {
+          examinerID: mongoose.Types.ObjectId(examiner._id),
+        }
+      },
+      {
+        $lookup: {
+          from: "subjects",
+          localField: "subjectID",
+          foreignField: "_id",
+          as: "subject",
+        }
+      },
+      {
+        $lookup: {
+          from: "questions",
+          localField: "_id",
+          foreignField: "examID",
+          as: "questions",
+        }
+      },
+      {
+        $unwind: "$subject"
+      },
+      {
+        $project: {
+          _id:0,
+          subjectName: "$subjects.name",
+          subjectID: "$subjectID",
+          examID: "$_id",
+          startTime:"$startTime",
+          endTime:"$endTime",
+          totalMarks:"$totalMarks",
+          passingMarks:"$passingMarks",
+          examDate:"$examDate",
+          duration:"$duration",
+          questions:"$questions"
+        }
+      }
+    ]);
+    return {
+      status: statusCodes.SUCCESS,
+      message: messages.EXAM_LOADED_SUCCESSFULLY,
+      data:{
+        count:exams.length,
+        exams:exams
+      }
+    }
+
+  } catch (error) {
 
     throw error;
 

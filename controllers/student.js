@@ -5,7 +5,7 @@ const universalFunction = require('../lib/universal-function');
 module.exports.getDashboard = async function (req,res) {
     try {
 
-        const response = await Handler.examiner.getDashboard(req);
+        const response = await Handler.student.getDashboard(req);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
     }
