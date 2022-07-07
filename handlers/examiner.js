@@ -113,6 +113,9 @@ module.exports.addStudent = async function (req) {
         message: messages.COURSE_NOT_FOUND,
       };
 
+    let password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
+    payload.password = password;
+
     let user = await Model.users.findOne(
       {
         $or: [{ email: payload.email }, { mobileNumber: payload.mobileNumber }],
@@ -157,12 +160,9 @@ module.exports.addStudent = async function (req) {
           message: messages.STUDENT_WITH_THIS_DETAILS_ALREADY_REGISTERED,
         };
 
-      let password = await universalFunction.hashPasswordUsingBcrypt(
-        payload.password
-      );
 
       let fieldsToUpdate = {
-        password: password,
+        password: password
       };
 
       let options = {
@@ -326,10 +326,10 @@ module.exports.createExam = async function (req) {
     let payload = req.body;
     let subject = await Model.subjects.findById(payload.subjectID);
     if (!subject)
-    return {
-      status: statusCodes.NOT_FOUND,
-      message: messages.SUBJECT_NOT_FOUND,
-    };
+      return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.SUBJECT_NOT_FOUND,
+      };
 
     let course = await Model.courses.findById(subject.courseID);
     if (course.examinerID != payload.examinerID)
@@ -349,10 +349,10 @@ module.exports.createExam = async function (req) {
       let student = await Model.students.findById(mongoose.Types.ObjectId(element));
       let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
       let data = {
-        email:user.email,
+        email: user.email,
         subject: subject.name,
         course: course.name,
-        accessCode : payload.accessCode
+        accessCode: payload.accessCode
       }
       mailer.sendExamMail(data);
     }
@@ -400,26 +400,26 @@ module.exports.viewExam = async function (req) {
       },
       {
         $project: {
-          _id:0,
+          _id: 0,
           subjectName: "$subjects.name",
           subjectID: "$subjectID",
           examID: "$_id",
-          startTime:"$startTime",
-          endTime:"$endTime",
-          totalMarks:"$totalMarks",
-          passingMarks:"$passingMarks",
-          examDate:"$examDate",
-          duration:"$duration",
-          questions:"$questions"
+          startTime: "$startTime",
+          endTime: "$endTime",
+          totalMarks: "$totalMarks",
+          passingMarks: "$passingMarks",
+          examDate: "$examDate",
+          duration: "$duration",
+          questions: "$questions"
         }
       }
     ]);
     return {
       status: statusCodes.SUCCESS,
       message: messages.EXAM_LOADED_SUCCESSFULLY,
-      data:{
-        count:exams.length,
-        exams:exams
+      data: {
+        count: exams.length,
+        exams: exams
       }
     }
 

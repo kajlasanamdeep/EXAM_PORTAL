@@ -30,6 +30,7 @@ app.use(cors(corsOptions));
 app.use('/', Routes.user);
 app.use('/admin', Routes.admin);
 app.use('/examiner', Routes.examiner);
+app.use('/student', Routes.student);
 
 /* setting connection to mongodb atlas database */
 connection.connect().then((connected) => {
