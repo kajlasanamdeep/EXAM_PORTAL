@@ -69,8 +69,6 @@ module.exports.createExamSchema = {
         examDate: joi.string().required().error(() => Error('Exam Date Is Not Valid')),
         duration: joi.string().required().error(() => Error('Duration Is Not Valid')),
         accessCode: joi.string().required().error(() => Error('Access Code Is Not Valid')),
-        totalMarks: joi.number().required().error(() => Error('Total Marks Is Not Valid')),
-        passingMarks: joi.number().required().error(() => Error('Passing Marks Is Not Valid')),
         questions:joi.array().items(
             joi.object({
                 question: joi.string().required().trim().error(() => Error('Question Is Not Valid')),

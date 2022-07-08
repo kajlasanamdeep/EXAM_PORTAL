@@ -66,7 +66,7 @@ const examModel = new Schema({
     examinerID: {
         type: Schema.Types.ObjectId,
         required: true
-    },
+    }
 });
 
 module.exports = mongoose.model('exams', examModel);

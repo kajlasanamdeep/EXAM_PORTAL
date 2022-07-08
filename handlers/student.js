@@ -12,12 +12,10 @@ module.exports.getDashboard = async function (req) {
     let student = await Model.students.aggregate([
         {
             $match:{userID:mongoose.Types.ObjectId(user._id)}
+        },
+        {
+            $
         }
-        // {
-        //     $group:{
-        //         _id:"$userID"
-        //     }
-        // }
     ])
     return{
         data:student

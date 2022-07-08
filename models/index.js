@@ -4,5 +4,6 @@ module.exports = {
     subjects:require('./subjects'),
     students:require('./students'),
     exams:require('./exams'),
+    studentExams:require('./assignExam'),
     questions:require('./questions')
 }

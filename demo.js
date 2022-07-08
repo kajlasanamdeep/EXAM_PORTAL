@@ -1,8 +1,11 @@
-let payload = [{n:1},{n:1},{n:2}];
+let payload = [{n:10},{n:10},{n:10}];
 
+// let total  = payload.map((e)=>e.n).reduce((a,b)=>a+b)
+// let pass = parseInt((34/100)*total);
 function check() {
-    for (let i in payload) {
-        if(payload.findIndex((e)=>e.n==payload[i].n)!=i){
+    for (let current_index in payload) {
+        let first_Index = payload.findIndex((e)=>e.n==payload[i].n);
+        if(first_Index != current_index){
             return 'Duplicate Entry!';
         }
     };
