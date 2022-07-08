@@ -7,7 +7,7 @@ const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
 const mailer = require("../services/mailer");
 const messages = messageList.MESSAGES;
-
+const moment = require('moment');
 module.exports.createCourse = async function (req) {
   try {
     let payload = req.body;
@@ -113,6 +113,9 @@ module.exports.addStudent = async function (req) {
         message: messages.COURSE_NOT_FOUND,
       };
 
+    let password = await universalFunction.hashPasswordUsingBcrypt(payload.password);
+    payload.password = password;
+
     let user = await Model.users.findOne(
       {
         $or: [{ email: payload.email }, { mobileNumber: payload.mobileNumber }],
@@ -157,12 +160,9 @@ module.exports.addStudent = async function (req) {
           message: messages.STUDENT_WITH_THIS_DETAILS_ALREADY_REGISTERED,
         };
 
-      let password = await universalFunction.hashPasswordUsingBcrypt(
-        payload.password
-      );
 
       let fieldsToUpdate = {
-        password: password,
+        password: password
       };
 
       let options = {
@@ -325,6 +325,12 @@ module.exports.createExam = async function (req) {
 
     let payload = req.body;
     let subject = await Model.subjects.findById(payload.subjectID);
+    if (!subject)
+      return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.SUBJECT_NOT_FOUND,
+      };
+
     let course = await Model.courses.findById(subject.courseID);
     if (course.examinerID != payload.examinerID)
       return {
@@ -343,10 +349,10 @@ module.exports.createExam = async function (req) {
       let student = await Model.students.findById(mongoose.Types.ObjectId(element));
       let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
       let data = {
-        email:user.email,
+        email: user.email,
         subject: subject.name,
         course: course.name,
-        accessCode : payload.accessCode
+        accessCode: payload.accessCode
       }
       mailer.sendExamMail(data);
     }
@@ -363,20 +369,65 @@ module.exports.createExam = async function (req) {
   }
 }
 
-module.exports.getStudentById = async function (req) {
-  try{
-    let payload = req.params;
-    let student = await Model.students.find(payload.studentID);
+
+module.exports.viewExam = async function (req) {
+  try {
+
+    console.log(moment().format());
+        
+    let examiner = req.loggedUser;
+    let exams = await Model.exams.aggregate([
+      {
+        $match: {
+          examinerID: mongoose.Types.ObjectId(examiner._id),
+        }
+      },
+      {
+        $lookup: {
+          from: "subjects",
+          localField: "subjectID",
+          foreignField: "_id",
+          as: "subject",
+        }
+      },
+      {
+        $lookup: {
+          from: "questions",
+          localField: "_id",
+          foreignField: "examID",
+          as: "questions",
+        }
+      },
+      {
+        $unwind: "$subject"
+      },
+      {
+        $project: {
+          _id: 0,
+          subjectName: "$subjects.name",
+          subjectID: "$subjectID",
+          examID: "$_id",
+          startTime: "$startTime",
+          endTime: "$endTime",
+          totalMarks: "$totalMarks",
+          passingMarks: "$passingMarks",
+          examDate: "$examDate",
+          duration: "$duration",
+          questions: "$questions"
+        }
+      }
+    ]);
+    
     return {
       status: statusCodes.SUCCESS,
-      message: messages.SUCCESS,
+      message: messages.EXAM_LOADED_SUCCESSFULLY,
       data: {
-        student: student
-      },
-    };
-       
-  }
-  catch (error) {
+        count: exams.length,
+        exams: exams
+      }
+    }
+
+  } catch (error) {
 
     throw error;
 

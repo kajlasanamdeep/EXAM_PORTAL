@@ -8,6 +8,18 @@ const universalFunction = require("../lib/universal-function");
 const messages = messageList.MESSAGES;
 
 module.exports.getDashboard = async function (req) {
-    let student = req.loggedUser;
-    
+    let user = req.loggedUser;
+    let student = await Model.students.aggregate([
+        {
+            $match:{userID:mongoose.Types.ObjectId(user._id)}
+        }
+        // {
+        //     $group:{
+        //         _id:"$userID"
+        //     }
+        // }
+    ])
+    return{
+        data:student
+    }
 }
