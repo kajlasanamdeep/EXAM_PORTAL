@@ -398,7 +398,7 @@ module.exports.viewExam = async function (req) {
       },
       {
         $lookup: {
-          from: "studentexams",
+          from: "examstudents",
           let: {
             id: "$_id" //localField
           },

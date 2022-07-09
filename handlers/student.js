@@ -14,7 +14,19 @@ module.exports.getDashboard = async function (req) {
             $match:{userID:mongoose.Types.ObjectId(user._id)}
         },
         {
-            $
+            $lookup:{
+                from:"users",
+                let:{
+                    userID:"$userID"
+                },
+                pipeline:[
+                    {
+                        $match:{
+                            $eq:['$$userID','$_id']
+                        }
+                    }
+                ]
+            }
         }
     ])
     return{

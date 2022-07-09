@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const studentExamModel = new Schema({
+const examStudentsModel = new Schema({
     subjectID: {
         type: Schema.Types.ObjectId,
         ref: 'subjects',
@@ -23,4 +23,4 @@ const studentExamModel = new Schema({
     },
 });
 
-module.exports = mongoose.model('studentexams', studentExamModel);
+module.exports = mongoose.model('examstudents', examStudentsModel);
