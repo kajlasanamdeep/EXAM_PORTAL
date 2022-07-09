@@ -11,6 +11,6 @@ router.post('/student', authorize(ACCOUNT_TYPE.EXAMINER), validate(addStudentSch
 router.get('/students/:courseID', authorize(ACCOUNT_TYPE.EXAMINER), validate(getStudentsSchema), examiner.getStudents);
 router.get('/subjects/:courseID', authorize(ACCOUNT_TYPE.EXAMINER), validate(getSubjectsSchema),examiner.getSubjects);
 router.post('/exam',authorize(ACCOUNT_TYPE.EXAMINER),validate(createExamSchema),examiner.createExam);
-router.get('/exam',authorize(ACCOUNT_TYPE.EXAMINER),examiner.viewExam);
+router.get('/exams',authorize(ACCOUNT_TYPE.EXAMINER),examiner.viewExam);
 
 module.exports = router;
