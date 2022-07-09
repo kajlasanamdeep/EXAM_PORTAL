@@ -107,7 +107,7 @@ module.exports.addStudent = async function (req) {
     let payload = req.body;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -199,7 +199,7 @@ module.exports.getStudents = async function (req) {
     let payload = req.params;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -272,7 +272,7 @@ module.exports.getSubjects = async function (req) {
     let payload = req.params;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -332,7 +332,7 @@ module.exports.createExam = async function (req) {
       };
 
     let course = await Model.courses.findById(subject.courseID);
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -351,7 +351,7 @@ module.exports.createExam = async function (req) {
     for (let element of payload.students) {
       let student = await Model.students.findById(mongoose.Types.ObjectId(element));
       let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
-      await Model.studentExams.create({
+      await Model.examstudents.create({
         examID: exam._id,
         studentID: student._id,
         subjectID: subject._id,
@@ -400,7 +400,7 @@ module.exports.viewExam = async function (req) {
         $lookup: {
           from: "examstudents",
           let: {
-            id: "$_id" //localField
+            id: "$_id"
           },
           pipeline: [
             {
@@ -409,8 +409,8 @@ module.exports.viewExam = async function (req) {
                   $and: [
                     {
                       $eq: [
-                        "$$id", //localField variable
-                        "$examID" //foreignField variable
+                        "$$id",
+                        "$examID"
                       ]
                     }
                   ]
@@ -421,7 +421,7 @@ module.exports.viewExam = async function (req) {
               $lookup: {
                 from: "students",
                 let: {
-                  studentID: "$studentID" //localField
+                  studentID: "$studentID"
                 },
                 pipeline: [
                   {
@@ -499,7 +499,7 @@ module.exports.viewExam = async function (req) {
         $lookup: {
           from: "questions",
           let: {
-                id: "$_id" //localField
+                id: "$_id"
           },
           pipeline: [
                       {
@@ -508,8 +508,8 @@ module.exports.viewExam = async function (req) {
                                           $and: [
                                                   {
                                                     $eq: [
-                                                            "$$id", //localField variable
-                                                            "$examID" //foreignField variable
+                                                            "$$id",
+                                                            "$examID"
                                                          ]
                                                   }
                                                 ]
@@ -576,5 +576,3 @@ module.exports.viewExam = async function (req) {
 
   }
 };
-
-// module.exports.examstudents =
