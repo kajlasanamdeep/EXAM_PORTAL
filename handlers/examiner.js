@@ -339,7 +339,7 @@ module.exports.createExam = async function (req) {
       };
 
     payload.totalMarks = parseInt(payload.questions.map((e) => e.marks).reduce((a, b) => a + b));
-    payload.passingMarks = parseInt((34 / 100) * payload.totalMarks);
+    payload.passingMarks = parseInt((35 / 100) * payload.totalMarks);
 
     let exam = await Model.exams.create(payload);
 
@@ -349,7 +349,11 @@ module.exports.createExam = async function (req) {
     }
 
     for (let element of payload.students) {
-      let student = await Model.students.findById(mongoose.Types.ObjectId(element));
+      let student = await Model.students.findOne({ _id: mongoose.Types.ObjectId(element), courseID: course._id });
+      if (!student) return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.STUDENT_NOT_FOUND
+      }
       let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
       await Model.examstudents.create({
         examID: exam._id,
@@ -430,65 +434,65 @@ module.exports.viewExam = async function (req) {
                         $and: [
                           {
                             $eq: [
-                              "$$studentID","$_id"]
+                              "$$studentID", "$_id"]
                           }
                         ]
                       }
                     }
                   },
                   {
-                    $lookup:{
-                      from:"users",
-                      let:{
-                        userID:"$userID"
+                    $lookup: {
+                      from: "users",
+                      let: {
+                        userID: "$userID"
                       },
-                      pipeline:[
+                      pipeline: [
                         {
-                          $match:{
-                            $expr:{
-                              $and:[{
-                                $eq:["$$userID","$_id"]
+                          $match: {
+                            $expr: {
+                              $and: [{
+                                $eq: ["$$userID", "$_id"]
                               }]
                             }
                           }
                         },
                         {
-                          $project:{
-                            firstName:"$firstName",
-                            lastName:"$lastName",
-                            email:"$email",
-                            mobileNumber:"$mobileNumber"
+                          $project: {
+                            firstName: "$firstName",
+                            lastName: "$lastName",
+                            email: "$email",
+                            mobileNumber: "$mobileNumber"
                           }
                         }
                       ],
-                      as:"user"
+                      as: "user"
                     }
                   },
                   {
-                    $unwind:"$user"
+                    $unwind: "$user"
                   },
                   {
-                    $project:{
-                      firstName:"$user.firstName",
-                      lastName:"$user.lastName",
-                      email:"$user.email",
-                      mobileNumber:"$user.mobileNumber"  
+                    $project: {
+                      firstName: "$user.firstName",
+                      lastName: "$user.lastName",
+                      email: "$user.email",
+                      mobileNumber: "$user.mobileNumber"
                     }
                   }
                 ],
-                as:"student"
+                as: "student"
               }
             },
             {
-              $unwind:"$student"
+              $unwind: "$student"
             },
             {
-              $project:{
-                firstName:"$student.firstName",
-                lastName:"$student.lastName",
-                email:"$student.email",
-                mobileNumber:"$student.mobileNumber",
-                studentID:"$studentID"
+              $project: {
+                firstName: "$student.firstName",
+                lastName: "$student.lastName",
+                email: "$student.email",
+                mobileNumber: "$student.mobileNumber",
+                studentID: "$studentID"
               }
             }
           ],
@@ -499,32 +503,32 @@ module.exports.viewExam = async function (req) {
         $lookup: {
           from: "questions",
           let: {
-                id: "$_id"
+            id: "$_id"
           },
           pipeline: [
-                      {
-                        $match: {
-                                  $expr: {
-                                          $and: [
-                                                  {
-                                                    $eq: [
-                                                            "$$id",
-                                                            "$examID"
-                                                         ]
-                                                  }
-                                                ]
-                                  }
-                              }
-                      },
-                      {
-                        $project: {
-                        question: "$question",
-                        marks: "$marks",
-                        options: "$options",
-                        correctOption: "$correctOption",
-                        }
-                      }
-                  ],
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: [
+                        "$$id",
+                        "$examID"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              $project: {
+                question: "$question",
+                marks: "$marks",
+                options: "$options",
+                correctOption: "$correctOption",
+              }
+            }
+          ],
           as: "questions"
         }
       },
