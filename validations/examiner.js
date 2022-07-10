@@ -53,7 +53,7 @@ module.exports.addStudentSchema = {
         courseID: joi.string().hex().length(24).required().error(() => Error('Course ID Is Not Valid')),
         fatherName: joi.string().required().error(() => Error('Father Name Is Not Valid')),
         motherName: joi.string().required().error(() => Error('Mother Name Is Not Valid')),
-        dob: joi.string().required().error(() => Error('D.O.B. Is Not Valid')),
+        dob: joi.date().required().error(() => Error('D.O.B. Is Not Valid')),
         city: joi.string().required().error(() => Error('City Is Not Valid')),
         state: joi.string().required().error(() => Error('State Is Not Valid')),
         address: joi.string().required().error(() => Error('Address Is Not Valid')),
@@ -66,14 +66,14 @@ module.exports.createExamSchema = {
         subjectID: joi.string().hex().length(24).required().error(() => Error('SubjectID Is Not Valid')),
         startTime: joi.string().required().error(() => Error('Start Time Is Not Valid')),
         endTime: joi.string().required().error(() => Error('End Time Is Not Valid')),
-        examDate: joi.string().required().error(() => Error('Exam Date Is Not Valid')),
+        examDate: joi.date().required().error(() => Error('Exam Date Is Not Valid')),
         duration: joi.string().required().error(() => Error('Duration Is Not Valid')),
         accessCode: joi.string().required().error(() => Error('Access Code Is Not Valid')),
         questions:joi.array().items(
             joi.object({
                 question: joi.string().required().trim().error(() => Error('Question Is Not Valid')),
-                options: joi.array().items(joi.string().required().error(() => Error('Option Is Not Valid'))),
-                correctOption: joi.string().required().error(() => Error('Correct Option Is Not Valid')),
+                options: joi.array().items(joi.string().required().trim().error(() => Error('Option Is Not Valid'))),
+                correctOption: joi.string().required().trim().error(() => Error('Correct Option Is Not Valid')),
                 marks: joi.number().required().error(() => Error('Marks Is Not Valid'))
             }).required().error(() => Error('Question Is Not Valid'))).required().error(() => Error('Questions Is Not Valid')),
         students: joi.array().items(joi.string().hex().length(24).required().error(() => Error('StudentID Is Not Valid'))).required().error(() => Error('Students Is Not Valid'))
