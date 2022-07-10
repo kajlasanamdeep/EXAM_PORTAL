@@ -151,9 +151,9 @@ module.exports.getDashboard = async function (req) {
                         $project:{
                             _id:0,
                             examID:1,
+                            studentID:1,
                             subject:"$subject.name",
                             course:"$subject.course.name",
-                            studentID:"$studentID",
                             totalMarks:"$exam.totalMarks",
                             startTime:"$exam.startTime",
                             endTime:"$exam.endTime",
@@ -176,9 +176,9 @@ module.exports.getDashboard = async function (req) {
                 dob:{$first:"$dob"},
                 fatherName:{$first:"$fatherName"},
                 motherName:{$first:"$motherName"},
-                address:{$first:"$address"},
-                city:{$first:"$city"},
-                state:{$first:"$state"},
+                address:{$last:"$address"},
+                city:{$last:"$city"},
+                state:{$last:"$state"},
                 gender:{$first:"$gender"},
                 exams:{$push:"$studentexams"}
             }
