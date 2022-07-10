@@ -22,14 +22,128 @@ module.exports.getDashboard = async function (req) {
                 pipeline:[
                     {
                         $match:{
-                            $eq:['$$userID','$_id']
+                            $expr:{
+                                $eq:['$$userID','$_id']
+                            }
                         }
                     }
-                ]
+                ],
+                as:'user'
+            }
+        },
+        {
+            $unwind:"$user"
+        },
+        {
+            $lookup:{
+                from:"courses",
+                localField:"courseID",
+                foreignField:"_id",
+                as:"course"
+            }
+        },
+        {
+            $unwind:"$course"
+        },
+        {
+            $lookup:{
+                from:"examstudents",
+                let:{
+                    studentID:"$_id"
+                },
+                pipeline:[
+                    {
+                        $match:{
+                            $expr:{
+                                $eq:["$$studentID","$studentID"]
+                            }
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from:"exams",
+                            let:{
+                                examID:"$examID"
+                            },
+                            pipeline:[
+                                {
+                                    $match:{
+                                        $expr:{
+                                            $eq:["$$examID","$_id"]
+                                        }
+                                    }
+                                },
+                                {
+                                    $lookup:{
+                                        from:"questions",
+                                        let: {
+                                            id: "$_id"
+                                          },
+                                          pipeline: [
+                                            {
+                                              $match: {
+                                                $expr: {
+                                                      $eq: ["$$id","$examID"]
+                                                }
+                                              }
+                                            },
+                                            {
+                                              $project: {
+                                                question: "$question",
+                                                marks: "$marks",
+                                                options: "$options",
+                                                correctOption: "$correctOption",
+                                              }
+                                            }
+                                          ],
+                                        as: "questions"                                
+                                    }
+                                }
+                            ],
+                            as:"exam"
+                        }
+                    },
+                    {
+                        $unwind:"$exam"
+                    },
+                    {
+                        $project:{
+                            _id:0,
+                            examID:1,
+                            subjectID:1,
+                            totalMarks:"$exam.totalMarks",
+                            duration:"$exam.duration",
+                            examDate:"$exam.examDate",
+                            questions:"$exam.questions"
+                        }
+                    }
+                ],
+                as:"studentexams"
+            }
+        },
+        {
+            $project:{
+                firstName:"$user.firstName",
+                lastName:"$user.lastName",
+                email:"$user.email",
+                dob:"$dob",
+                fatherName:"$fatherName",
+                motherName:"$motherName",
+                address:"$address",
+                city:"$city",
+                state:"$state",
+                gender:"$gender",
+                course:"$course.name",
+                exams:"$studentexams"
             }
         }
-    ])
+    ]);
+
     return{
-        data:student
+        status:statusCodes.SUCCESS,
+        message:messages.DASHBOARD_LOADED_SUCCESSFULLY,
+        data:{
+            student:student
+        }
     }
 }

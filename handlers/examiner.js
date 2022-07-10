@@ -410,14 +410,7 @@ module.exports.viewExam = async function (req) {
             {
               $match: {
                 $expr: {
-                  $and: [
-                    {
-                      $eq: [
-                        "$$id",
-                        "$examID"
-                      ]
-                    }
-                  ]
+                      $eq: ["$$id","$examID"]
                 }
               }
             },
@@ -431,12 +424,7 @@ module.exports.viewExam = async function (req) {
                   {
                     $match: {
                       $expr: {
-                        $and: [
-                          {
-                            $eq: [
-                              "$$studentID", "$_id"]
-                          }
-                        ]
+                            $eq: ["$$studentID", "$_id"]
                       }
                     }
                   },
@@ -450,9 +438,7 @@ module.exports.viewExam = async function (req) {
                         {
                           $match: {
                             $expr: {
-                              $and: [{
                                 $eq: ["$$userID", "$_id"]
-                              }]
                             }
                           }
                         },
@@ -509,14 +495,7 @@ module.exports.viewExam = async function (req) {
             {
               $match: {
                 $expr: {
-                  $and: [
-                    {
-                      $eq: [
-                        "$$id",
-                        "$examID"
-                      ]
-                    }
-                  ]
+                      $eq: ["$$id","$examID"]
                 }
               }
             },
