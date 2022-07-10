@@ -139,7 +139,8 @@ module.exports.addStudent = async function (req) {
       user.email != payload.email ||
       user.lastName != payload.lastName ||
       user.firstName != payload.firstName ||
-      user.mobileNumber != payload.mobileNumber
+      user.mobileNumber != payload.mobileNumber ||
+      user.dob != payload.dob
     ) {
       return {
         status: statusCodes.UNPROCESSABLE_ENTITY,

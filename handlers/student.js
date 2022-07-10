@@ -153,7 +153,7 @@ module.exports.getDashboard = async function (req) {
                             examID:1,
                             subject:"$subject.name",
                             course:"$subject.course.name",
-                            courseID:"$subject.course._id",
+                            studentID:"$studentID",
                             totalMarks:"$exam.totalMarks",
                             startTime:"$exam.startTime",
                             endTime:"$exam.endTime",
@@ -190,18 +190,18 @@ module.exports.getDashboard = async function (req) {
             $project:{
                 _id:0,
                 userID:"$_id",
-                courses:1,
-                firstName:1,
-                lastName:1,
-                email:1,
-                dob:1,
-                fatherName:1,
-                motherName:1,
-                address:1,
-                city:1,
-                state:1,
-                gender:1,
-                exams:1
+                firstName:"$firstName",
+                lastName:"$lastName",
+                email:"$email",
+                dob:"$email",
+                fatherName:"$fatherName",
+                motherName:"$motherName",
+                address:"$address",
+                city:"$city",
+                state:"$state",
+                gender:"$gender",
+                courses:"$courses",
+                exams:"$exams"
             }
         }
     ]);
