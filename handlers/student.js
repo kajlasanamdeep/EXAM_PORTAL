@@ -91,8 +91,7 @@ module.exports.getDashboard = async function (req) {
                                               $project: {
                                                 question: "$question",
                                                 marks: "$marks",
-                                                options: "$options",
-                                                correctOption: "$correctOption",
+                                                options: "$options"
                                               }
                                             }
                                           ],
@@ -107,11 +106,57 @@ module.exports.getDashboard = async function (req) {
                         $unwind:"$exam"
                     },
                     {
+                        $lookup:{
+                            from:"subjects",
+                            let:{
+                                subjectID:"$subjectID"
+                            },
+                            pipeline:[
+                                {
+                                    $match:{
+                                        $expr:{
+                                            $eq:["$$subjectID","$_id"]
+                                        }
+                                    }
+                                },
+                                {
+                                    $lookup:{
+                                        from:"courses",
+                                        let:{
+                                            courseID:"$courseID"
+                                        },
+                                        pipeline:[
+                                            {
+                                                $match:{
+                                                    $expr:{
+                                                        $eq:["$$courseID","$_id"]
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        as:"course"
+                                    }
+                                },
+                                {
+                                    $unwind:"$course"
+                                }
+                            ],
+                            as:"subject"
+                        }
+                    },
+                    {
+                        $unwind:"$subject"
+                    },
+                    {
                         $project:{
                             _id:0,
                             examID:1,
-                            subjectID:1,
+                            subject:"$subject.name",
+                            course:"$subject.course.name",
+                            courseID:"$subject.course._id",
                             totalMarks:"$exam.totalMarks",
+                            startTime:"$exam.startTime",
+                            endTime:"$exam.endTime",
                             duration:"$exam.duration",
                             examDate:"$exam.examDate",
                             questions:"$exam.questions"
@@ -122,19 +167,41 @@ module.exports.getDashboard = async function (req) {
             }
         },
         {
+            $group:{
+                _id:"$userID",
+                courses:{$push:"$course.name"},
+                firstName:{$first:"$user.firstName"},
+                lastName:{$first:"$user.lastName"},
+                email:{$first:"$user.email"},
+                dob:{$first:"$dob"},
+                fatherName:{$first:"$fatherName"},
+                motherName:{$first:"$motherName"},
+                address:{$first:"$address"},
+                city:{$first:"$city"},
+                state:{$first:"$state"},
+                gender:{$first:"$gender"},
+                exams:{$push:"$studentexams"}
+            }
+        },
+        {
+            $unwind:"$exams"
+        },
+        {
             $project:{
-                firstName:"$user.firstName",
-                lastName:"$user.lastName",
-                email:"$user.email",
-                dob:"$dob",
-                fatherName:"$fatherName",
-                motherName:"$motherName",
-                address:"$address",
-                city:"$city",
-                state:"$state",
-                gender:"$gender",
-                course:"$course.name",
-                exams:"$studentexams"
+                _id:0,
+                userID:"$_id",
+                courses:1,
+                firstName:1,
+                lastName:1,
+                email:1,
+                dob:1,
+                fatherName:1,
+                motherName:1,
+                address:1,
+                city:1,
+                state:1,
+                gender:1,
+                exams:1
             }
         }
     ]);
