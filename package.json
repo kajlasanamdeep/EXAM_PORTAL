@@ -1,6 +1,9 @@
 {
   "name": "exam-portal",
   "version": "1.0.0",
+  "engines": {
+    "node": "17.6.0"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,7 +23,6 @@
   },
   "homepage": "https://github.com/kajlasanamdeep/EXAM_PORTAL#readme",
   "dependencies": {
-    "node":"17.6.0",
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
