@@ -7,7 +7,6 @@ const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
 const mailer = require("../services/mailer");
 const messages = messageList.MESSAGES;
-const moment = require('moment');
 module.exports.createCourse = async function (req) {
   try {
     let payload = req.body;
@@ -385,7 +384,7 @@ module.exports.createExam = async function (req) {
 
 module.exports.viewExam = async function (req) {
   try {
-         
+
     let examiner = req.loggedUser;
     let exams = await Model.exams.aggregate([
       {
@@ -520,7 +519,7 @@ module.exports.viewExam = async function (req) {
           from: "courses",
           localField: "subject.courseID",
           foreignField: "_id",
-          as: "course",
+          as: "course"
         }
       },
       {
@@ -540,6 +539,7 @@ module.exports.viewExam = async function (req) {
           passingMarks: "$passingMarks",
           examDate: "$examDate",
           duration: "$duration",
+          status:"$durationStatus",
           questions: "$questions"
         }
       }

@@ -5,5 +5,6 @@ const { validate, authorize } = require('../middelwares');
 const {  } = require('../validations/student');
 
 router.get('/dashboard', authorize(ACCOUNT_TYPE.STUDENT), student.getDashboard);
+router.get('/exams', authorize(ACCOUNT_TYPE.STUDENT), student.getExams);
 
 module.exports = router;
