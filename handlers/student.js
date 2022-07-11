@@ -9,7 +9,7 @@ const messages = messageList.MESSAGES;
 
 module.exports.getDashboard = async function (req) {
     let user = req.loggedUser;
-    console.log(user._id);
+
     let student = await Model.students.aggregate([
         {
             $match:{userID:mongoose.Types.ObjectId(user._id)}
@@ -69,6 +69,9 @@ module.exports.getDashboard = async function (req) {
                             pipeline:[
                                 {
                                     $match:{
+                                        examDate:{
+                                            $gte:new Date()
+                                        },
                                         $expr:{
                                             $eq:["$$examID","$_id"]
                                         }
