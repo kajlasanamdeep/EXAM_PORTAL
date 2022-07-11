@@ -29,11 +29,11 @@ const examModel = new Schema({
     },
     endTime: {
         type: String,
-         required:true
+        required:true
     },
     examDate: {
         type: Date,
-         required:true
+        required:true
     },
     duration: {
         type: String,

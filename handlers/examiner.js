@@ -107,7 +107,7 @@ module.exports.addStudent = async function (req) {
     let payload = req.body;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -199,7 +199,7 @@ module.exports.getStudents = async function (req) {
     let payload = req.params;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -272,7 +272,7 @@ module.exports.getSubjects = async function (req) {
     let payload = req.params;
     let course = await Model.courses.findById(payload.courseID);
 
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
@@ -332,14 +332,14 @@ module.exports.createExam = async function (req) {
       };
 
     let course = await Model.courses.findById(subject.courseID);
-    if (course.examinerID != payload.examinerID)
+    if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
       };
 
     payload.totalMarks = parseInt(payload.questions.map((e) => e.marks).reduce((a, b) => a + b));
-    payload.passingMarks = parseInt((34 / 100) * payload.totalMarks);
+    payload.passingMarks = parseInt((35 / 100) * payload.totalMarks);
 
     let exam = await Model.exams.create(payload);
 
@@ -349,9 +349,13 @@ module.exports.createExam = async function (req) {
     }
 
     for (let element of payload.students) {
-      let student = await Model.students.findById(mongoose.Types.ObjectId(element));
+      let student = await Model.students.findOne({ _id: mongoose.Types.ObjectId(element), courseID: course._id });
+      if (!student) return {
+        status: statusCodes.NOT_FOUND,
+        message: messages.STUDENT_NOT_FOUND
+      }
       let user = await Model.users.findById(mongoose.Types.ObjectId(student.userID));
-      await Model.studentExams.create({
+      await Model.examstudents.create({
         examID: exam._id,
         studentID: student._id,
         subjectID: subject._id,
@@ -401,22 +405,15 @@ module.exports.viewExam = async function (req) {
       },
       {
         $lookup: {
-          from: "subjectExams",
+          from: "examstudents",
           let: {
-            id: "$_id" //localField
+            id: "$_id"
           },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $and: [
-                    {
-                      $eq: [
-                        "$$id", //localField variable
-                        "$examID" //foreignField variable
-                      ]
-                    }
-                  ]
+                      $eq: ["$$id","$examID"]
                 }
               }
             },
@@ -424,74 +421,67 @@ module.exports.viewExam = async function (req) {
               $lookup: {
                 from: "students",
                 let: {
-                  studentID: "$studentID" //localField
+                  studentID: "$studentID"
                 },
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $and: [
-                          {
-                            $eq: [
-                              "$$studentID","$_id"]
-                          }
-                        ]
+                            $eq: ["$$studentID", "$_id"]
                       }
                     }
                   },
                   {
-                    $lookup:{
-                      from:"users",
-                      let:{
-                        userID:"$userID"
+                    $lookup: {
+                      from: "users",
+                      let: {
+                        userID: "$userID"
                       },
-                      pipeline:[
+                      pipeline: [
                         {
-                          $match:{
-                            $expr:{
-                              $and:[{
-                                $eq:["$$userID","$_id"]
-                              }]
+                          $match: {
+                            $expr: {
+                                $eq: ["$$userID", "$_id"]
                             }
                           }
                         },
                         {
-                          $project:{
-                            firstName:"$firstName",
-                            lastName:"$lastName",
-                            email:"$email",
-                            mobileNumber:"$mobileNumber"
+                          $project: {
+                            firstName: "$firstName",
+                            lastName: "$lastName",
+                            email: "$email",
+                            mobileNumber: "$mobileNumber"
                           }
                         }
                       ],
-                      as:"user"
+                      as: "user"
                     }
                   },
                   {
-                    $unwind:"$user"
+                    $unwind: "$user"
                   },
                   {
-                    $project:{
-                      firstName:"$user.firstName",
-                      lastName:"$user.lastName",
-                      email:"$user.email",
-                      mobileNumber:"$user.mobileNumber"  
+                    $project: {
+                      firstName: "$user.firstName",
+                      lastName: "$user.lastName",
+                      email: "$user.email",
+                      mobileNumber: "$user.mobileNumber"
                     }
                   }
                 ],
-                as:"student"
+                as: "student"
               }
             },
             {
-              $unwind:"$student"
+              $unwind: "$student"
             },
             {
-              $project:{
-                firstName:"$student.firstName",
-                lastName:"$student.lastName",
-                email:"$student.email",
-                mobileNumber:"$student.mobileNumber",
-                studentID:"$studentID"
+              $project: {
+                firstName: "$student.firstName",
+                lastName: "$student.lastName",
+                email: "$student.email",
+                mobileNumber: "$student.mobileNumber",
+                studentID: "$studentID"
               }
             }
           ],
@@ -502,32 +492,25 @@ module.exports.viewExam = async function (req) {
         $lookup: {
           from: "questions",
           let: {
-                id: "$_id" //localField
+            id: "$_id"
           },
           pipeline: [
-                      {
-                        $match: {
-                                  $expr: {
-                                          $and: [
-                                                  {
-                                                    $eq: [
-                                                            "$$id", //localField variable
-                                                            "$examID" //foreignField variable
-                                                         ]
-                                                  }
-                                                ]
-                                  }
-                              }
-                      },
-                      {
-                        $project: {
-                        question: "$question",
-                        marks: "$marks",
-                        options: "$options",
-                        correctOption: "$correctOption",
-                        }
-                      }
-                  ],
+            {
+              $match: {
+                $expr: {
+                      $eq: ["$$id","$examID"]
+                }
+              }
+            },
+            {
+              $project: {
+                question: "$question",
+                marks: "$marks",
+                options: "$options",
+                correctOption: "$correctOption",
+              }
+            }
+          ],
           as: "questions"
         }
       },
@@ -579,5 +562,3 @@ module.exports.viewExam = async function (req) {
 
   }
 };
-
-// module.exports.examstudents =
