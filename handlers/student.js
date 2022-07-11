@@ -9,7 +9,7 @@ const messages = messageList.MESSAGES;
 
 module.exports.getDashboard = async function (req) {
     let user = req.loggedUser;
-    let student = await Model.students.aggregate([
+    let student = await Model.exams.aggregate([
         {
             $match:{userID:mongoose.Types.ObjectId(user._id)}
         },
