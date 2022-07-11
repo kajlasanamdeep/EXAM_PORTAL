@@ -24,7 +24,7 @@ const answerModel = new Schema({
     },
     correct: {
         type: Boolean,
-         required:true
+        required:true
     },
     status: {
         type: String,

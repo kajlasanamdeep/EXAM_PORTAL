@@ -385,9 +385,7 @@ module.exports.createExam = async function (req) {
 
 module.exports.viewExam = async function (req) {
   try {
-
-   
-        
+         
     let examiner = req.loggedUser;
     let exams = await Model.exams.aggregate([
       {
