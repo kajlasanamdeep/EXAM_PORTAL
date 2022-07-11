@@ -307,7 +307,7 @@ module.exports.getExams = async function (req) {
 
         return {
             status: statusCodes.SUCCESS,
-            message: messages.DASHBOARD_LOADED_SUCCESSFULLY,
+            message: messages.EXAM_LOADED_SUCCESSFULLY,
             data: {
                 ...studentexams[0]
             }
@@ -320,20 +320,116 @@ module.exports.getExams = async function (req) {
     }
 }
 
-module.exports.accessExam = async function (req){
+module.exports.accessExam = async function (req) {
     try {
-        
+
         let payload = req.body;
         let exam = await Model.exams.findById(payload.examID);
         let student = await Model.students.findById(payload.studentID);
-        let isExamStudent = await Model.examstudents.findOne({examID:payload.examID,studentID:payload.studentID});
-        if(!exam || !student || !isExamStudent) return{
-            status:statusCodes.FORBIDDEN,
-            message:messages.FORBIDDEN
+        let examStudent = await Model.examstudents.findOne({ examID: payload.examID, studentID: payload.studentID });
+        if (!exam) return {
+            status: statusCodes.NOT_FOUND,
+            message: messages.EXAM_NOT_FOUND
         }
-    
+        if (!student) return {
+            status: statusCodes.NOT_FOUND,
+            message: messages.STUDENT_NOT_FOUND
+        }
+        if (!examStudent) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.STUDENT_NOT_ALLOWDED_TO_TAKE_EXAM
+        }
+        if (payload.accessCode != exam.accessCode) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.INVALID_EXAM_ACCESS_CODE
+        }
+        if (exam.durationStatus == APP_CONSTANTS.DURATION_STATUS.OVER) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.EXAM_ALREADY_COMPLETED
+        }
+
+        exam = await Model.exams.aggregate([
+            {
+                $match: {
+                    _id: mongoose.Types.ObjectId(exam._id)
+                }
+            },
+            {
+                $lookup: {
+                    from: "questions",
+                    let: {
+                        id: "$_id"
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$$id", "$examID"]
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                questionID: "$_id",
+                                question: "$question",
+                                marks: "$marks",
+                                options: "$options",
+                            }
+                        }
+                    ],
+                    as: "questions"
+                }
+            },
+            {
+                $lookup: {
+                    from: "subjects",
+                    localField: "subjectID",
+                    foreignField: "_id",
+                    as: "subject",
+                }
+            },
+            {
+                $unwind: "$subject"
+            },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "subject.courseID",
+                    foreignField: "_id",
+                    as: "course"
+                }
+            },
+            {
+                $unwind: "$course"
+            },
+            {
+                $project: {
+                    _id: 0,
+                    examID: "$_id",
+                    course: "$course.name",
+                    subject: "$subject.name",
+                    startTime: "$startTime",
+                    endTime: "$endTime",
+                    totalMarks: "$totalMarks",
+                    passingMarks: "$passingMarks",
+                    examDate: "$examDate",
+                    duration: "$duration",
+                    questions: "$questions"
+                }
+            }
+        ]);
+
+        return {
+            status:statusCodes.SUCCESS,
+            message:messages.EXAM_LOADED_SUCCESSFULLY,
+            data:{
+                studentID:student._id,
+                exam:exam[0]
+            }
+        }
     } catch (error) {
-        
+
         throw error;
 
     }

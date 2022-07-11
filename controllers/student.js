@@ -32,8 +32,8 @@ module.exports.getExams = async function (req,res) {
 
 module.exports.accessExam = async function (req,res) {
     try {
-
-        const response = await Handler.student.getExams(req);
+        
+        const response = await Handler.student.accessExam(req);
         return universalFunction.sendResponse(res, response.status, response.message, response.data);
 
     }

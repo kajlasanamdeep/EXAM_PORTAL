@@ -347,6 +347,8 @@ module.exports.createExam = async function (req) {
       await Model.questions.create({ ...question, examID: exam._id });
     }
 
+    payload.students = payload.students.filter((e,i,arr)=>arr.indexOf(e)===i);
+    
     for (let element of payload.students) {
       let student = await Model.students.findOne({ _id: mongoose.Types.ObjectId(element), courseID: course._id });
       if (!student) return {
