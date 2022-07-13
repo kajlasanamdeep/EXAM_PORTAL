@@ -1,5 +1,5 @@
-let payload = [10,10,10,5];
- console.log(payload.filter((e,i,arr)=>arr.indexOf(e)==i));
+// let payload = [10,10,10,5];
+//  console.log(payload.filter((e,i,arr)=>arr.indexOf(e)==i));
 
 // let total  = payload.map((e)=>e.n).reduce((a,b)=>a+b)
 // let pass = parseInt((34/100)*total);
@@ -12,4 +12,5 @@ let payload = [10,10,10,5];
 //     };
 // }
 
-// console.log(check());
+const [date,] = new Date(Date.now() + (5 * 3600000 + 1800000)).toISOString().split('T');
+console.log(new Date(date));

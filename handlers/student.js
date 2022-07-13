@@ -185,6 +185,8 @@ module.exports.getDashboard = async function (req) {
 
     }
 }
+const [date,] = new Date(Date.now() + (5 * 3600000 + 1800000)).toISOString().split('T');
+
 module.exports.getExams = async function (req) {
     try {
         let user = req.loggedUser;
@@ -215,7 +217,7 @@ module.exports.getExams = async function (req) {
                                 pipeline: [
                                     {
                                         $match: {
-                                            examDate: new Date(),
+                                            examDate: new Date(date),
                                             $expr: {
                                                 $eq: ["$$examID", "$_id"]
                                             }
