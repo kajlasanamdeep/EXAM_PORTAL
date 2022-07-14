@@ -15,3 +15,31 @@ module.exports.getDashboard = async function (req,res) {
 
     }
 };
+
+module.exports.getExams = async function (req,res) {
+    try {
+
+        const response = await Handler.student.getExams(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+};
+
+module.exports.accessExam = async function (req,res) {
+    try {
+        
+        const response = await Handler.student.accessExam(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+};
