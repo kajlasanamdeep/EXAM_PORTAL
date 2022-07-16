@@ -353,7 +353,8 @@ module.exports.accessExam = async function (req) {
         exam = await Model.exams.aggregate([
             {
                 $match: {
-                    _id: mongoose.Types.ObjectId(exam._id)
+                    _id: mongoose.Types.ObjectId(exam._id),
+                    examDate:new Date(date)
                 }
             },
             {
