@@ -345,6 +345,10 @@ module.exports.accessExam = async function (req) {
             status: statusCodes.FORBIDDEN,
             message: messages.INVALID_EXAM_ACCESS_CODE
         }
+        if (exam.examDate != new Date(date) ) return {
+            status: statusCodes.FORBIDDEN,
+            message: messages.EXAM_ONLY_ACCESSED_ON_EXAMDATE
+        }
         if (exam.durationStatus == APP_CONSTANTS.DURATION_STATUS.OVER) return {
             status: statusCodes.FORBIDDEN,
             message: messages.EXAM_ALREADY_COMPLETED
@@ -353,8 +357,7 @@ module.exports.accessExam = async function (req) {
         exam = await Model.exams.aggregate([
             {
                 $match: {
-                    _id: mongoose.Types.ObjectId(exam._id),
-                    examDate:new Date(date)
+                    _id: mongoose.Types.ObjectId(exam._id)
                 }
             },
             {
