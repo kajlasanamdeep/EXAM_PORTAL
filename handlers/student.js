@@ -160,7 +160,7 @@ module.exports.getDashboard = async function (req) {
                     firstName: "$firstName",
                     lastName: "$lastName",
                     email: "$email",
-                    dob: "$email",
+                    dob: "$dob",
                     fatherName: "$fatherName",
                     motherName: "$motherName",
                     address: "$address",
