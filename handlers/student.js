@@ -6,6 +6,7 @@ const statusCodes = statusCodeList.STATUS_CODE;
 const messageList = require("../messages/messages");
 const universalFunction = require("../lib/universal-function");
 const messages = messageList.MESSAGES;
+const [date,] = new Date(Date.now() + (5 * 3600000 + 1800000)).toISOString().split('T');
 
 module.exports.getDashboard = async function (req) {
     try {
@@ -59,7 +60,7 @@ module.exports.getDashboard = async function (req) {
                                     {
                                         $match: {
                                             examDate: {
-                                                $gte: new Date()
+                                                $gte: new Date(date)
                                             },
                                             $expr: {
                                                 $eq: ["$$examID", "$_id"]
@@ -185,7 +186,6 @@ module.exports.getDashboard = async function (req) {
 
     }
 }
-const [date,] = new Date(Date.now() + (5 * 3600000 + 1800000)).toISOString().split('T');
 
 module.exports.getExams = async function (req) {
     try {
