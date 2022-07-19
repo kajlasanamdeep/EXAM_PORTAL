@@ -1,0 +1,9 @@
+list of organisers who organised more than 10 games in the last 6 months only in jeddah
+ and not ggo(financial ggo) games table
+
+
+user fulllname
+username
+email
+age
+mobile

@@ -436,3 +436,17 @@ module.exports.accessExam = async function (req) {
 
     }
 }
+
+module.exports.answer = async function (req){
+    try{
+        let payload = req.body;
+        
+
+
+    } catch (error) {
+
+        throw error;
+
+    }
+
+} 

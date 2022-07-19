@@ -43,3 +43,17 @@ module.exports.accessExam = async function (req,res) {
 
     }
 };
+
+module.exports.answer = async function (req,res) {
+    try{
+        const response = await Handler.student.answer(req);
+        return universalFunction.sendResponse(res,response.status,response.message,response.data);
+
+    }
+    catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+
+}

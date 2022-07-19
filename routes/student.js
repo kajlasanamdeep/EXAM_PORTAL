@@ -7,5 +7,6 @@ const { accessExamSchema } = require('../validations/student');
 router.get('/dashboard', authorize(ACCOUNT_TYPE.STUDENT), student.getDashboard);
 router.get('/exams', authorize(ACCOUNT_TYPE.STUDENT), student.getExams);
 router.post('/exam', authorize(ACCOUNT_TYPE.STUDENT), validate(accessExamSchema), student.accessExam);
+router.post('/answer', student.answer);
 
 module.exports = router;
