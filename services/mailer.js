@@ -1,3 +1,4 @@
+require('dotenv').config();
 const sendGridMail = require('@sendgrid/mail');
 const config = require('../config/config')
 sendGridMail.setApiKey(config.GRIDAPIKEY);
