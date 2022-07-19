@@ -246,8 +246,6 @@ module.exports.getStudents = async function (req) {
           mobilenumber: "$details.mobileNumber",
         },
       },
-      { $skip: pageIndex },
-			{ $limit: pageSize },
     ]);
 
     let count = await Model.students.countDocuments({
