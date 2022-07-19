@@ -345,7 +345,7 @@ module.exports.accessExam = async function (req) {
             status: statusCodes.FORBIDDEN,
             message: messages.INVALID_EXAM_ACCESS_CODE
         }
-        if (exam.examDate != new Date(date) ) return {
+        if (exam.examDate != new Date() ) return {
             status: statusCodes.FORBIDDEN,
             message: messages.EXAM_ONLY_ACCESSED_ON_EXAMDATE
         }
