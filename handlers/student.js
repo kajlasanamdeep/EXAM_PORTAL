@@ -324,7 +324,6 @@ module.exports.getExams = async function (req) {
 
 module.exports.accessExam = async function (req) {
     try {
-
         let payload = req.body;
         let exam = await Model.exams.findById(payload.examID);
         let student = await Model.students.findById(payload.studentID);
@@ -345,10 +344,11 @@ module.exports.accessExam = async function (req) {
             status: statusCodes.FORBIDDEN,
             message: messages.INVALID_EXAM_ACCESS_CODE
         }
-        if (exam.examDate != new Date() ) return {
+        if (exam.examDate <= new Date() ) return {
             status: statusCodes.FORBIDDEN,
             message: messages.EXAM_ONLY_ACCESSED_ON_EXAMDATE
         }
+       
         if (exam.durationStatus == APP_CONSTANTS.DURATION_STATUS.OVER) return {
             status: statusCodes.FORBIDDEN,
             message: messages.EXAM_ALREADY_COMPLETED
