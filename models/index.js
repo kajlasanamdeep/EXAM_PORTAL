@@ -5,5 +5,6 @@ module.exports = {
     students:require('./students'),
     exams:require('./exams'),
     examstudents:require('./examstudents'),
-    questions:require('./questions')
+    questions:require('./questions'),
+    answers:require('./answers')
 }
