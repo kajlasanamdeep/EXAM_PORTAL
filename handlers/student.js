@@ -326,7 +326,6 @@ module.exports.accessExam = async function (req) {
     try {
         let payload = req.body;
         let exam = await Model.exams.findById(payload.examID);
-        console.log(exam.examDate);
         let student = await Model.students.findById(payload.studentID);
         let examStudent = await Model.examstudents.findOne({ examID: payload.examID, studentID: payload.studentID });
         if (!exam) return {
