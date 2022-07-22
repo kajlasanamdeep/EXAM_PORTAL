@@ -443,10 +443,63 @@ module.exports.accessExam = async function (req) {
 
 module.exports.answer = async function (req){
     try{
+
         let payload = req.body;
+        let attemptedQs=[];
+        let notattemptedQs=[];
+        payload.answers.forEach(element => {
+        if(element.answer){
+            attemptedQs.push({
+                'studentID':element.studentID,
+                'questionID':element.questionID,
+                'answer':element.answer,
+                'status':"ATTEMPTED"
+                            });
+        }else{
+            notattemptedQs.push({
+                'studentID':element.studentID,
+                'questionID':element.questionID,
+                'status':"NOT_ATTEMPTED"
+            })
+        }
 
+        });
+       
+        let canswers = [];
+        let answers;
+        for(let i= 0;i < attemptedQs.length; i++ ){
+           answers = await Model.questions.findById(attemptedQs[i].questionID);
+           canswers.push({ 'questionID':answers._id,
+            'answer':answers.correctOption});
+        }
+        
+        let Answers = [];
+        for(let x=0; x < attemptedQs.length ; x++){
+            if(attemptedQs[x].questionID === canswers[x].questionID.toString() && attemptedQs[x].answer === canswers[x].answer){
+                attemptedQs[x]['correct'] = true;
+                Answers.push(attemptedQs[x]);
+            }else{
+                attemptedQs[x]['correct'] = false;
+                Answers.push(attemptedQs[x]);
+               
+            }
+           
+        }
 
+        for(let y = 0 ; y < notattemptedQs.length ; y++){
+            Answers.push(notattemptedQs[y])
+        }
+          
+        for(let z = 0; z < payload.answers.length; z++){
+            let ans = await Model.answers.create(Answers[z]);
+            console.log(ans);
+        }
 
+        return {
+            status:statusCodes.SUCCESS,
+            message:messages.EXAM_SUBMITTED_SUCCESSFULLY
+        }
+        
     } catch (error) {
 
         throw error;

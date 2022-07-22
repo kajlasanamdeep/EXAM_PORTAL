@@ -19,12 +19,10 @@ const answerModel = new Schema({
         required: true
     },
     answer: {
-        type: String,
-        required: true
+        type: String
     },
     correct: {
-        type: Boolean,
-        required:true
+        type: Boolean
     },
     status: {
         type: String,
