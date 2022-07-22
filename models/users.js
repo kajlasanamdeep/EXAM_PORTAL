@@ -41,7 +41,7 @@ const UserModel = new Schema({
         enum: userStatus,
         default: userStatus[0],
     },
-    createdOn: { type: Number, default: ISODate() }
+    createdOn: { type: Number, default: Date.now() }
 });
 
 module.exports = mongoose.model('users', UserModel);
