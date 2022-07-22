@@ -40,7 +40,8 @@ const UserModel = new Schema({
         type: String,
         enum: userStatus,
         default: userStatus[0],
-    }
+    },
+    createdOn: { type: Number, default: new Date() }
 });
 
 module.exports = mongoose.model('users', UserModel);

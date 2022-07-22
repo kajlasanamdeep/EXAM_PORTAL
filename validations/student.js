@@ -9,3 +9,13 @@ module.exports.accessExamSchema = {
     })
     
 }
+
+module.exports.answerSchema = {
+
+    body: joi.object({
+        studentID: joi.string().hex().length(24).required().error(() => Error('Student ID Is Not Valid')),
+        questionID: joi.string().hex().length(24).required().error(() => Error('Question ID Is Not Valid')),
+
+    })
+    
+}

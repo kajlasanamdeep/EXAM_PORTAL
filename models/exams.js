@@ -66,7 +66,8 @@ const examModel = new Schema({
     examinerID: {
         type: Schema.Types.ObjectId,
         required: true
-    }
+    },
+    createdDate: { type: Date, default: new Date() }
 });
 
 module.exports = mongoose.model('exams', examModel);
