@@ -34,7 +34,7 @@ module.exports.approveOrDeclineExaminer = async function (req) {
 
     let fieldsToUpdate = {
       status: payload.action,
-      createdOn: new Date(Date.now() + 5 * 300000 + 1800000).toISOString()
+      createdOn: new Date(Date.now() + 5 * 3600000 + 1800000).toISOString()
     };
 
     let options = {
