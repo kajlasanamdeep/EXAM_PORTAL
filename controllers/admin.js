@@ -54,3 +54,16 @@ module.exports.getDashboard = async function (req, res) {
 
     }
 };
+
+module.exports.addExaminer = async function (req, res) {
+    try {
+
+        let response = await Handler.admin.addExaminer(req);
+        return universalFunction.sendResponse(res, response.status, response.message, response.data);
+
+    } catch (error) {
+
+        return universalFunction.errorResponse(res, error);
+
+    }
+};

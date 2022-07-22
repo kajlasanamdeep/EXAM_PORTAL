@@ -33,7 +33,8 @@ module.exports.approveOrDeclineExaminer = async function (req) {
     let _id = mongoose.Types.ObjectId(payload.examinerID);
 
     let fieldsToUpdate = {
-      status: payload.action
+      status: payload.action,
+      createdOn: new Date()
     };
 
     let options = {
