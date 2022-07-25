@@ -3,7 +3,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const multer = require('multer');
 const swaggerUI = require('swagger-ui-express');
 
 /* importing files */
@@ -13,7 +12,6 @@ const connection = require('./db/connection');
 const Routes = require('./routes');
 const swaggerJson = require('./swagger.json');
 const corsOptions = {
-    // origin: 'https://examination-portal.vercel.app',
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
         if (['http://localhost:3000', 'http://localhost:8000','https://examination-portal.vercel.app'].indexOf(origin) === -1) {
