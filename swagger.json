@@ -5,7 +5,7 @@
     "title": "REST API",
     "description": "Exam Portal Apis"
   },
-  "host": "",
+  "host": "exam-portal-by-hritik-sanam.herokuapp.com",
   "basePath": "/",
   "schemes": [
     "http",
