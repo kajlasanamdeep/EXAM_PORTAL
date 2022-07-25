@@ -329,14 +329,17 @@ module.exports.createExam = async function (req) {
         status: statusCodes.NOT_FOUND,
         message: messages.SUBJECT_NOT_FOUND,
       };
-
     let course = await Model.courses.findById(subject.courseID);
     if (!course || course.examinerID != payload.examinerID)
       return {
         status: statusCodes.NOT_FOUND,
         message: messages.COURSE_NOT_FOUND,
       };
-
+    if((payload.examDate.getTime() + (payload.startTime.split(":")[0] * 3600000) + (payload.startTime.split(":")[1] * 60000) <= Date.now()))
+      return {
+        status: statusCodes.BAD_REQUEST,
+        message: messages.EXAM_DATE_MUST_GREATER_THAN_NOW,
+      };
     payload.totalMarks = parseInt(payload.questions.map((e) => e.marks).reduce((a, b) => a + b));
     payload.passingMarks = parseInt((35 / 100) * payload.totalMarks);
 

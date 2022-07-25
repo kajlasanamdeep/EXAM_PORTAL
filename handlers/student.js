@@ -37,16 +37,32 @@ module.exports.getDashboard = async function (req) {
                 $unwind: "$user"
             },
             {
+                $group:{
+                    _id:"$userID",
+                    firstName: { $first: "$user.firstName" },
+                    lastName: { $first: "$user.lastName" },
+                    email: { $first: "$user.email" },
+                    dob: { $first: "$dob" },
+                    fatherName: { $first: "$fatherName" },
+                    motherName: { $first: "$motherName" },
+                    address: { $last: "$address" },
+                    city: { $last: "$city" },
+                    state: { $last: "$state" },
+                    gender: { $first: "$gender" },
+                    studentID:{$push:"$_id"}
+                }
+            },
+            {
                 $lookup: {
                     from: "examstudents",
                     let: {
-                        studentID: "$_id"
+                        studentID: "$studentID"
                     },
                     pipeline: [
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ["$$studentID", "$studentID"]
+                                    $in: ["$studentID", "$$studentID"]
                                 }
                             }
                         },
@@ -135,39 +151,9 @@ module.exports.getDashboard = async function (req) {
                 }
             },
             {
-                $group: {
-                    _id: "$userID",
-                    firstName: { $first: "$user.firstName" },
-                    lastName: { $first: "$user.lastName" },
-                    email: { $first: "$user.email" },
-                    dob: { $first: "$dob" },
-                    fatherName: { $first: "$fatherName" },
-                    motherName: { $first: "$motherName" },
-                    address: { $last: "$address" },
-                    city: { $last: "$city" },
-                    state: { $last: "$state" },
-                    gender: { $first: "$gender" },
-                    exams: { $push: "$studentexams" }
-                }
-            },
-            {
-                $unwind: "$exams"
-            },
-            {
-                $project: {
-                    _id: 0,
-                    userID: "$_id",
-                    firstName: "$firstName",
-                    lastName: "$lastName",
-                    email: "$email",
-                    dob: "$dob",
-                    fatherName: "$fatherName",
-                    motherName: "$motherName",
-                    address: "$address",
-                    city: "$city",
-                    state: "$state",
-                    gender: "$gender",
-                    exams: "$exams"
+                $project:{
+                    _id:0,
+                    studentID:0
                 }
             }
         ]);
@@ -196,15 +182,42 @@ module.exports.getExams = async function (req) {
             },
             {
                 $lookup: {
-                    from: "examstudents",
+                    from: "users",
                     let: {
-                        studentID: "$_id"
+                        userID: "$userID"
                     },
                     pipeline: [
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ["$$studentID", "$studentID"]
+                                    $eq: ['$$userID', '$_id']
+                                }
+                            }
+                        }
+                    ],
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: "$user"
+            },
+            {
+                $group:{
+                    _id:"$userID",
+                    studentID:{$push:"$_id"}
+                }
+            },
+            {
+                $lookup: {
+                    from: "examstudents",
+                    let: {
+                        studentID: "$studentID"
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $in: ["$studentID", "$$studentID"]
                                 }
                             }
                         },
@@ -287,22 +300,13 @@ module.exports.getExams = async function (req) {
                             }
                         }
                     ],
-                    as: "exams"
+                    as: "studentexams"
                 }
             },
             {
-                $group: {
-                    _id: "$userID",
-                    exams: { $push: "$exams" }
-                }
-            },
-            {
-                $unwind: "$exams"
-            },
-            {
-                $project: {
-                    _id: 0,
-                    exams: 1
+                $project:{
+                    studentexams:1,
+                    _id:0
                 }
             }
         ]);

@@ -1,5 +1,6 @@
 const joi = require('joi');
 const APP_CONSTANTS = require('../constant/APP_CONSTANTS');
+const [date,] = new Date(Date.now() + (5 * 3600000 + 1800000)).toISOString().split('T');
 
 const genders = [
     APP_CONSTANTS.STUDENT_GENDER.MALE,
@@ -53,7 +54,7 @@ module.exports.addStudentSchema = {
         courseID: joi.string().hex().length(24).required().error(() => Error('Course ID Is Not Valid')),
         fatherName: joi.string().required().error(() => Error('Father Name Is Not Valid')),
         motherName: joi.string().required().error(() => Error('Mother Name Is Not Valid')),
-        dob: joi.date().required().error(() => Error('D.O.B. Is Not Valid')),
+        dob: joi.date().less(new Date(date)).required().error(() => Error('D.O.B. Is Not Valid')),
         city: joi.string().required().error(() => Error('City Is Not Valid')),
         state: joi.string().required().error(() => Error('State Is Not Valid')),
         address: joi.string().required().error(() => Error('Address Is Not Valid')),
