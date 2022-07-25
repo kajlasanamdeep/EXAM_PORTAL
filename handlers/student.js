@@ -162,7 +162,7 @@ module.exports.getDashboard = async function (req) {
             status: statusCodes.SUCCESS,
             message: messages.DASHBOARD_LOADED_SUCCESSFULLY,
             data: {
-                student: student
+                student: student[0]
             }
         }
     }
@@ -315,7 +315,7 @@ module.exports.getExams = async function (req) {
             status: statusCodes.SUCCESS,
             message: messages.EXAM_LOADED_SUCCESSFULLY,
             data: {
-                ...studentexams
+                ...studentexams[0]
             }
         }
     }

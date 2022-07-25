@@ -5,7 +5,7 @@
     "title": "REST API",
     "description": "Exam Portal Apis"
   },
-  "host": "localhost:8000",
+  "host": "",
   "basePath": "/",
   "schemes": [
     "http",
