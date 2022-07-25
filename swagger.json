@@ -1,0 +1,546 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": "Exam Portal Apis"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "content": "application/json",
+        "description": "User Login Api",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "required": true
+                },
+                "password": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/register": {
+      "post": {
+        "content": "application/json",
+        "description": "User Signup Api",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "example": "abc",
+                  "required": true
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "123",
+                  "required": true
+                },
+                "mobileNumber": {
+                  "type": "string",
+                  "example": "9876543210",
+                  "required": true
+                },
+                "email": {
+                  "type": "string",
+                  "example": "abc@email.com",
+                  "required": true
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "description": "Admin Dashboard Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/examiners/{status}": {
+      "get": {
+        "description": "Get Approved or Declined Examiners Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "example": "approved",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/examiner/action": {
+      "put": {
+        "description": "Approve or Decline Examiner Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "Approve or Decline",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "examinerID": {
+                  "type": "string",
+                  "required": true
+                },
+                "action": {
+                  "type": "string",
+                  "example": "APPROVED",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/examiner/{examinerID}": {
+      "delete": {
+        "description": "Delete Examiner Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "examinerID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/dashboard": {
+      "get": {
+        "description": "Examiner Dashboard Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/course": {
+      "post": {
+        "description": "Create Course Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "Course",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "BCA",
+                  "required": true
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Bachelor of computer applications",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/subjects": {
+      "post": {
+        "description": "Create Subjects Api",
+        "content": "application/json",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "subjects",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subjects": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "courseID": {
+                        "type": "string",
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/student": {
+      "post": {
+        "description": "Examiner Create Student Api",
+        "parameters": [
+          {
+            "name": "student",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "required": true
+                },
+                "lastName": {
+                  "type": "string",
+                  "required": true
+                },
+                "email": {
+                  "type": "string",
+                  "required": true
+                },
+                "mobileNumber": {
+                  "type": "string",
+                  "required": true
+                },
+                "dob": {
+                  "type": "string",
+                  "required": true
+                },
+                "courseID": {
+                  "type": "string",
+                  "required": true
+                },
+                "password": {
+                  "type": "string",
+                  "required": true
+                },
+                "fatherName": {
+                  "type": "string",
+                  "required": true
+                },
+                "motherName": {
+                  "type": "string",
+                  "required": true
+                },
+                "city": {
+                  "type": "string",
+                  "required": true
+                },
+                "state": {
+                  "type": "string",
+                  "required": true
+                },
+                "address": {
+                  "type": "string",
+                  "required": true
+                },
+                "gender": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            }
+          },
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+          ],
+        "responses": {}
+      }
+    },
+    "/examiner/students/{courseID}": {
+      "get": {
+        "description": "Examiner View Students Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "courseID",
+            "in": "path",
+            "example": "_id of course",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/subjects/{courseID}": {
+      "get": {
+        "description": "Examiner View Subjects Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "courseID",
+            "in": "path",
+            "example": "_id of course",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/exam": {
+      "post": {
+        "description": "Examiner Create Exam Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "Course",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subjectID": {
+                  "type": "string",
+                  "required": true
+                },
+                "startTime": {
+                  "type": "string",
+                  "required": true
+                },
+                "endTime": {
+                  "type": "string",
+                  "required": true
+                },
+                "examDate": {
+                  "type": "string",
+                  "required": true
+                },
+                "duration": {
+                  "type": "string",
+                  "required": true
+                },
+                "accessCode": {
+                  "type": "string",
+                  "required": true
+                },
+                "students": {
+                  "type": "array",
+                  "required": true,
+                  "items": {
+                    "type":"string"
+                  }
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "marks": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "correctOption": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "options": {
+                        "type": "array",
+                        "required": true,
+                        "items":{
+                          "type":"string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/examiner/exams": {
+      "get": {
+        "description": "Examiner Exams Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/student/dashboard": {
+      "get": {
+        "description": "Student Dashboard Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/student/exam": {
+      "post": {
+        "description": "Student Access Exam Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          },
+          {
+            "name": "exam",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "studentID": {
+                  "type": "string",
+                  "required": true
+                },
+                "accessCode": {
+                  "type": "string",
+                  "required": true
+                },
+                "examID": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            }
+          }
+          ],
+        "responses": {}
+      }
+    },
+    "/student/exams": {
+      "get": {
+        "description": "Student Exam Api",
+        "parameters": [
+          {
+            "name": "authorization",
+            "type": "string",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "responses": {}
+      }
+    }
+  }
+}

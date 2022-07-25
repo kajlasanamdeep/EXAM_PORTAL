@@ -3,17 +3,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const multer = require('multer');
+const swaggerUI = require('swagger-ui-express');
 
 /* importing files */
 dotenv.config({ path: './.env' });
 const config = require('./config/config');
 const connection = require('./db/connection');
 const Routes = require('./routes');
+const swaggerJson = require('./swagger.json');
 const corsOptions = {
     // origin: 'https://examination-portal.vercel.app',
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
-        if (['http://localhost:3000', 'https://examination-portal.vercel.app'].indexOf(origin) === -1) {
+        if (['http://localhost:3000', 'http://localhost:8000','https://examination-portal.vercel.app'].indexOf(origin) === -1) {
             let msg = 'The CORS policy for this site does not allow access from the specified Origin.';
             return callback(new Error(msg), false);
         }
@@ -28,6 +31,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use('/', Routes.user);
+app.use('/docs',swaggerUI.serve,swaggerUI.setup(swaggerJson));
 app.use('/admin', Routes.admin);
 app.use('/examiner', Routes.examiner);
 app.use('/student', Routes.student);
